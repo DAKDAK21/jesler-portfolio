@@ -17,6 +17,7 @@ export const profile = {
   links: {
     linkedin: 'https://www.linkedin.com/in/jeslerguzman/',
     github: 'https://github.com/DAKDAK21',
+    instagram: 'https://www.instagram.com/jes_gzm/',
     email: 'jesler.guzman210@gmail.com',
   },
 }

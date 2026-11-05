@@ -17,7 +17,7 @@ import {
   UserRound,
 } from 'lucide-react'
 import { about, certifications, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
-import { Card, Chip, GithubIcon, LinkedinIcon, Reveal } from './ui'
+import { Card, Chip, GithubIcon, InstagramIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
 
 export const domainOf = (url) => {
@@ -253,10 +253,11 @@ const linkTile = `group flex items-center gap-3 ${tile} transition hover:border-
 
 // Goals, social links and contact, side by side at the bottom of the page.
 export function Contact() {
-  const { email, linkedin, github } = profile.links
+  const { email, linkedin, github, instagram } = profile.links
   const socials = [
     linkedin && { icon: LinkedinIcon, label: 'LinkedIn', href: linkedin },
     github && { icon: GithubIcon, label: 'GitHub', href: github },
+    instagram && { icon: InstagramIcon, label: 'Instagram', href: instagram },
   ].filter(Boolean)
   const openChat = () => window.dispatchEvent(new Event('open-chat'))
 

@@ -17,6 +17,16 @@ export function LinkedinIcon({ className = 'size-5' }) {
   )
 }
 
+export function InstagramIcon({ className = 'size-5' }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className} aria-hidden="true">
+      <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" />
+      <circle cx="12" cy="12" r="4.25" />
+      <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 // Fades a block in the first time it scrolls into view.
 export function Reveal({ children, className = '', delay = 0 }) {
   const ref = useRef(null)
