@@ -25,7 +25,7 @@ export const profile = {
 
 export const about = [
   "I'm a BSIT student who enjoys building complete systems, not just pages. I like taking a real problem from a real client and turning it into something people actually use every day.",
-  'For our Capstone, I was one of the main developers of TraiSki, a learning management system for a senior high school. I worked across the whole stack: the React frontend, the Express API, the MySQL database and the deployment.',
+  'For our capstone, I was one of the main developers of TraiSki, a learning management system for a senior high school. I worked across the whole stack: the React frontend, the Express API, the MySQL database and the deployment.',
   "I care about software that saves people work. When our defense panel told us a feature was \"computerized, not automated,\" we rebuilt it so the system does the work for the teacher. That's the kind of developer I want to be.",
 ]
 
@@ -67,9 +67,9 @@ export const projects = [
   {
     name: 'TraiSki LMS',
     featured: true,
-    tagline: 'Capstone 2: a learning management system for a senior high school',
+    tagline: 'Capstone project: a learning management system for a senior high school',
     description:
-      'A full learning management system built for San Rafael Technological and Vocational High School (SRTVHS) so classes can continue online when classrooms are too hot to use. Four portals (Student, Teacher, Admin and Super Admin) cover modules, quizzes, assignments, grading, messaging and school records.',
+      'It is a full learning management system made for San Rafael Technological and Vocational High School (SRTVHS) so classes can continue online when classrooms are too hot to use. Four portals (Student, Teacher, Admin and Super Admin) cover modules, quizzes, assignments, grading, messaging and school records.',
     highlights: [
       'Quizzes that build themselves from the module content and are scored by the server, with results released automatically',
       'Rubric grading: the teacher enters one score and the system fills in the criteria breakdown and feedback',
@@ -77,9 +77,9 @@ export const projects = [
       'Security: bcrypt passwords, JWT sessions, optional authenticator-app 2FA, login activity and audit logs',
       'Admin tools: bulk account creation from Excel, class record export, archiving instead of deleting',
     ],
-    role: 'Full-stack developer: frontend, backend, database and deployment',
+    role: 'Full-stack developer (frontend, backend, database and deployment)',
     team: ['Jesler Guzman', 'Felix Gold Velez', 'Lorenz Carceler', 'Richmond Jabez Panganiban'], // capstone group
-    result: 'Defended Oct 31, 2026. Passed with minor revisions, grade 90.',
+    result: 'Defended on October 31, 2026 and passed with minor revisions and a grade of 90.',
     stack: ['React', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'MySQL', 'JWT', 'Playwright', 'Render'],
     links: {
       live: 'https://srtvhs-elms.website',
@@ -126,13 +126,13 @@ export const certifications = [
   },
 ]
 
-// Shown as a timeline, newest first.
 // Shown at the bottom of the page.
 export const goals = [
   'Complete my OJT and grow into a full-stack developer who ships software people rely on every day.',
   'Keep improving my skills in software development and contribute to projects that make a real difference.',
 ]
 
+// Shown as a timeline, newest first.
 export const journey = [
   {
     when: '2026',
@@ -150,7 +150,7 @@ export const journey = [
     when: '2026',
     title: 'Real client, real users',
     place: 'SRTVHS',
-    detail: 'SRTVHS planned to start using TraiSki for its online classes in November 2026.',
+    detail: 'Built for SRTVHS so the school can run its online classes, starting November 2026.',
   },
   {
     when: '2023 – 2027',

@@ -50,7 +50,7 @@ const topics = [
     id: 'traiski',
     keywords: ['traiski', 'capstone', 'lms', 'learning management', 'thesis', 'srtvhs', 'defense', 'defend'],
     answer: () => ({
-      text: `${traiski.name} is ${profile.firstName}'s capstone: ${traiski.description}\n\nHighlights:\n${traiski.highlights
+      text: `${traiski.name} is the capstone project ${profile.firstName} built with his team. ${traiski.description}\n\nHighlights:\n${traiski.highlights
         .slice(0, 4)
         .map((h) => `• ${h}`)
         .join('\n')}\n\nHis role: ${traiski.role}. ${traiski.result}`,
@@ -64,7 +64,7 @@ const topics = [
     id: 'projects',
     keywords: ['project', 'projects', 'built', 'build', 'made', 'work', 'portfolio', 'gawa', 'ginawa', 'system'],
     answer: () => ({
-      text: `Here's what ${profile.firstName} has built:\n${projects.map((p) => `• ${p.name}: ${p.tagline}`).join('\n')}\n\nAsk "Tell me about TraiSki" for the full story of his capstone.`,
+      text: `Here's what ${profile.firstName} has built:\n${projects.map((p) => `• ${p.name} – ${p.tagline}`).join('\n')}\n\nAsk "Tell me about TraiSki" for the full story of his capstone.`,
       links: [{ label: 'See projects', href: '#projects' }],
     }),
   },
@@ -88,7 +88,7 @@ const topics = [
     id: 'certs',
     keywords: ['cert', 'certs', 'certificate', 'certificates', 'certification', 'certifications', 'aws', 'cloud', 'ec2', 'vpc', 'training', 'robot', 'cobot'],
     answer: () => ({
-      text: `${profile.firstName}'s certificates:\n${certifications.map((c) => `• ${c.name} (${c.issuer}, ${c.date})`).join('\n')}`,
+      text: `${profile.firstName}'s certificates:\n${certifications.map((c) => `• ${c.name} – ${c.issuer}, ${c.date}`).join('\n')}`,
       links: [{ label: 'See certificates', href: '#certifications' }],
     }),
   },
@@ -96,7 +96,7 @@ const topics = [
     id: 'education',
     keywords: ['school', 'study', 'studies', 'student', 'course', 'education', 'college', 'university', 'graduate', 'graduation', 'year', 'sti', 'bsit', 'degree', 'aral', 'nag-aaral', 'paaralan'],
     answer: () => ({
-      text: `${profile.firstName} is taking up ${profile.courseFull} at ${profile.school} (${profile.schoolYears}). Before that he finished Senior High School (TVL-ICT strand) at the same school in 2023.`,
+      text: `${profile.firstName} is taking up a ${profile.courseFull} at ${profile.school}. He started in 2023 and is expected to graduate in August 2027. Before that, he finished Senior High School (TVL-ICT strand) at the same school in 2023.`,
       links: [{ label: 'See education', href: '#journey' }],
     }),
   },

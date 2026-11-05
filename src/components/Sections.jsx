@@ -293,7 +293,7 @@ export function Contact() {
             <ColumnTitle icon={MessageSquareText}>Contact</ColumnTitle>
             <div className={tile}>
               <p className="text-sm leading-relaxed text-soft">
-                Actively seeking an OJT / Internship opportunity. Open to junior developer roles and freelance projects
+                Actively seeking an OJT / internship opportunity. Open to junior developer roles and freelance projects
                 too.
               </p>
               {email && (
