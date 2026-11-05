@@ -14,7 +14,7 @@ export const profile = {
   resume: '', // optional: put resume.pdf in public/ and set '/resume.pdf'
   openTo: ['OJT / Internship', 'Junior developer roles', 'Freelance projects'],
   links: {
-    linkedin: 'https://www.linkedin.com/in/jesler-guzman-125517447/',
+    linkedin: 'https://www.linkedin.com/in/jeslerguzman/',
     github: 'https://github.com/DAKDAK21',
     email: 'jesler.guzman210@gmail.com',
   },
