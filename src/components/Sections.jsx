@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import {
   ArrowRight,
+  ArrowUpRight,
   Award,
   BriefcaseBusiness,
   ChevronRight,
@@ -18,7 +19,6 @@ import {
 import { about, certifications, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
 import { Card, Chip, GithubIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
-import ProjectViewer from './ProjectViewer'
 
 export const domainOf = (url) => {
   try {
@@ -154,34 +154,46 @@ export function Experience() {
   )
 }
 
+// Each card opens the project's site directly in a new tab.
 export function Projects() {
-  const [open, setOpen] = useState(null)
   return (
     <Card id="projects" icon={FolderKanban} title="Projects">
       <div className="grid gap-3 sm:grid-cols-2">
         {projects.map((p) => {
           const link = p.links.live || p.links.code
-          return (
-            <button
-              key={p.name}
-              type="button"
-              onClick={() => setOpen(p)}
-              className="group flex h-full cursor-pointer flex-col rounded-xl border border-line bg-panel p-4 text-left transition hover:-translate-y-0.5 hover:border-muted/40 hover:shadow-md"
-            >
+          const inner = (
+            <>
               <div className="flex w-full items-start justify-between gap-2">
                 <h3 className="font-semibold text-fg">{p.name}</h3>
-                <ChevronRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-fg" />
+                {link && (
+                  <ArrowUpRight className="size-4 shrink-0 text-muted transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-fg" />
+                )}
               </div>
               <p className="mt-1 flex-1 text-sm leading-snug text-muted">{p.tagline}</p>
               <span className="mt-3 inline-flex max-w-full items-center gap-1.5 truncate rounded-md border border-line bg-chip px-2 py-1 font-mono text-xs text-soft">
                 <span className={`size-1.5 shrink-0 rounded-full ${link ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                 {link ? domainOf(link) : 'Live demo soon'}
               </span>
-            </button>
+            </>
+          )
+          const cls = 'group flex h-full flex-col rounded-xl border border-line bg-panel p-4 text-left'
+          return link ? (
+            <a
+              key={p.name}
+              href={link}
+              target="_blank"
+              rel="noreferrer"
+              className={`${cls} transition hover:-translate-y-0.5 hover:border-muted/40 hover:shadow-md`}
+            >
+              {inner}
+            </a>
+          ) : (
+            <div key={p.name} className={cls}>
+              {inner}
+            </div>
           )
         })}
       </div>
-      <ProjectViewer project={open} onClose={() => setOpen(null)} />
     </Card>
   )
 }
@@ -211,7 +223,7 @@ export function Certifications() {
               {c.image ? (
                 <button
                   type="button"
-                  onClick={() => setViewing(c)}
+                  onClick={() => setViewing({ ...c, bare: true })}
                   className={`group ${cls} cursor-pointer transition hover:border-muted/40 hover:shadow-md`}
                 >
                   {body}

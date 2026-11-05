@@ -21,6 +21,36 @@ export default function CertViewer({ cert, onClose }) {
 
   if (!cert) return null
 
+  // Bare mode: just the image with a small close button (used for certificates).
+  if (cert.bare) {
+    return (
+      <div
+        className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label={cert.name}
+      >
+        <div className="pop-in relative" onClick={(e) => e.stopPropagation()}>
+          <img
+            src={cert.image}
+            alt={cert.alt || `Certificate: ${cert.name}`}
+            className="max-h-[85dvh] w-auto max-w-[min(64rem,calc(100vw-2rem))] rounded-xl bg-white object-contain shadow-2xl"
+          />
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            aria-label="Close"
+            className="absolute -top-3 -right-3 rounded-full border border-line bg-panel p-1.5 text-fg shadow-lg transition hover:bg-chip"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
       className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
