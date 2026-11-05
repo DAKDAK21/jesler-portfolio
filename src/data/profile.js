@@ -89,7 +89,7 @@ export const projects = [
       'A fast, responsive personal site built with React, Vite and Tailwind CSS and deployed on Vercel. All content comes from a single data file, so it is easy to keep up to date.',
     highlights: [],
     stack: ['React', 'Vite', 'Tailwind CSS', 'Vercel'],
-    links: { live: '', code: '' },
+    links: { live: 'https://jesler-portfolio.vercel.app', code: 'https://github.com/DAKDAK21/jesler-portfolio.' },
   },
 ]
 
