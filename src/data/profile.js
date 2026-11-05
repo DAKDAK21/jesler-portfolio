@@ -119,7 +119,7 @@ export const certifications = [
   {
     name: 'Collaborative Robot Programming Level III',
     issuer: 'St. Amatiel Technological Institute',
-    date: 'Sep 2026',
+    date: 'In progress', // change to the month you receive it, e.g. 'Dec 2026'
     tag: 'Robotics',
     image: '',
     pdf: '',
