@@ -8,7 +8,8 @@ export const profile = {
   courseFull: 'Bachelor of Science in Information Technology',
   school: 'STI College Caloocan',
   schoolYears: '2023 – Expected graduation: August 2027',
-  location: 'Philippines',
+  headline: 'BSIT Student · Full-Stack Developer',
+  location: 'Valenzuela City, Metro Manila, Philippines',
   tagline: 'I build web apps end to end, from the database schema to the last pixel of the UI.',
   photo: '/profile.jpg', // put your photo in public/profile.jpg
   resume: '', // optional: put resume.pdf in public/ and set '/resume.pdf'
@@ -56,7 +57,7 @@ export const skillGroups = [
     title: 'Tools & DevOps',
     color: 'pink',
     icon: 'wrench',
-    items: ['Git & GitHub', 'Render', 'Vercel', 'Playwright (E2E tests)', 'Postman', 'ESLint', 'Figma', 'VS Code'],
+    items: ['Git & GitHub', 'Render', 'Vercel', 'AWS (EC2, VPC basics)', 'Playwright (E2E tests)', 'Postman', 'ESLint', 'Figma', 'VS Code'],
   },
 ]
 
@@ -78,8 +79,8 @@ export const projects = [
     result: 'Defended Oct 31, 2026. Passed with minor revisions, grade 90.',
     stack: ['React', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'MySQL', 'JWT', 'Playwright', 'Render'],
     links: {
-      live: '', // TODO: add the live Render URL if you want it public
-      code: 'https://github.com/carcelerlorenz/New-Backend-and-Frontend',
+      live: 'https://srtvhs-elms.website',
+      code: '', // the TraiSki repo is private, so no public source link
     },
   },
   {
@@ -94,31 +95,70 @@ export const projects = [
   },
 ]
 
+// Certificates. Optional `image` (shown in a pop-up viewer) and `pdf` (download), both in public/certs/.
+export const certifications = [
+  {
+    name: 'Introduction to Amazon Virtual Private Cloud (VPC)',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-vpc.jpg',
+    pdf: '/certs/aws-intro-vpc.pdf',
+  },
+  {
+    name: 'Introduction to Amazon EC2',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-ec2.jpg',
+    pdf: '/certs/aws-intro-ec2.pdf',
+  },
+  {
+    name: 'Collaborative Robot Programming Level III',
+    issuer: 'St. Amatiel Technological Institute',
+    date: 'Sep 2026',
+    tag: 'Robotics',
+    image: '',
+    pdf: '',
+  },
+]
+
+// Shown as a timeline, newest first.
 export const journey = [
   {
     when: '2026',
-    title: 'Capstone 2 defense: TraiSki LMS',
+    title: 'OJT / Internship: actively seeking',
+    detail: 'Available for a 480-hour OJT starting February 2027. On-site, hybrid or remote.',
+    current: true,
+  },
+  {
+    when: '2026',
+    title: 'Capstone developer: TraiSki LMS',
+    place: 'Defended October 2026',
     detail: 'Passed with minor revisions and a grade of 90. Finished all of the panel\'s revisions within days.',
   },
   {
     when: '2026',
     title: 'Real client, real users',
+    place: 'SRTVHS',
     detail: 'SRTVHS planned to start using TraiSki for its online classes in November 2026.',
   },
   {
-    when: '2026',
-    title: 'Collaborative Robot Programming Level III',
-    detail: 'Training and certification from St. Amatiel Technological Institute.',
-  },
-  {
     when: '2023 – 2027',
-    title: 'BS Information Technology, STI College Caloocan',
+    title: 'BS Information Technology',
+    place: 'STI College Caloocan',
     detail:
-      'Expected graduation August 2027. Coursework in database management systems, systems analysis and design, web development, networking, object-oriented programming and information security.',
+      'Expected graduation August 2027. Coursework in databases, systems analysis and design, web development, networking, OOP and information security.',
   },
   {
     when: '2023',
-    title: 'Senior High School, TVL-ICT, STI College Caloocan',
-    detail: 'Graduated from the Information and Communications Technology strand. Member of the IT student organization.',
+    title: 'Senior High School, TVL-ICT',
+    place: 'STI College Caloocan',
+    detail: 'Information and Communications Technology strand. Member of the IT student organization.',
+  },
+  {
+    when: '2022',
+    title: 'Hello World! 👋',
+    detail: 'Wrote my first program and started learning to code.',
   },
 ]

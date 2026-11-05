@@ -35,7 +35,7 @@ export function Reveal({ children, className = '', delay = 0 }) {
           io.disconnect()
         }
       },
-      { threshold: 0.12 },
+      { threshold: 0.08 },
     )
     io.observe(el)
     return () => io.disconnect()
@@ -52,41 +52,30 @@ export function Reveal({ children, className = '', delay = 0 }) {
   )
 }
 
-export function SectionTitle({ index, title, kicker }) {
+// A white (or dark) card with an icon + title header.
+export function Card({ id, icon: Icon, title, action, children, className = '', delay = 0 }) {
   return (
-    <Reveal className="mb-10">
-      <p className="font-mono text-sm text-cyan-400">
-        <span className="text-zinc-600">{index}.</span> {kicker}
-      </p>
-      <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">{title}</h2>
+    <Reveal delay={delay} className={className}>
+      <section id={id} className="h-full scroll-mt-6 rounded-2xl border border-line bg-panel p-6 shadow-sm sm:p-7">
+        {title && (
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-fg">
+              {Icon && <Icon className="size-5 text-muted" strokeWidth={2} />}
+              {title}
+            </h2>
+            {action}
+          </div>
+        )}
+        {children}
+      </section>
     </Reveal>
   )
 }
 
-// Tailwind needs full class names written out, so colors are mapped here.
-export const tone = {
-  violet: {
-    text: 'text-violet-300',
-    chip: 'border-violet-500/25 bg-violet-500/10 text-violet-200',
-    ring: 'hover:border-violet-500/50',
-    icon: 'bg-violet-500/15 text-violet-300',
-  },
-  cyan: {
-    text: 'text-cyan-300',
-    chip: 'border-cyan-500/25 bg-cyan-500/10 text-cyan-200',
-    ring: 'hover:border-cyan-500/50',
-    icon: 'bg-cyan-500/15 text-cyan-300',
-  },
-  emerald: {
-    text: 'text-emerald-300',
-    chip: 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200',
-    ring: 'hover:border-emerald-500/50',
-    icon: 'bg-emerald-500/15 text-emerald-300',
-  },
-  pink: {
-    text: 'text-pink-300',
-    chip: 'border-pink-500/25 bg-pink-500/10 text-pink-200',
-    ring: 'hover:border-pink-500/50',
-    icon: 'bg-pink-500/15 text-pink-300',
-  },
+export function Chip({ children }) {
+  return (
+    <span className="inline-flex items-center rounded-lg border border-line bg-chip px-3 py-1.5 text-sm text-soft">
+      {children}
+    </span>
+  )
 }

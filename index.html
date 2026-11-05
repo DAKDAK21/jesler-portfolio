@@ -18,6 +18,17 @@
     <meta name="twitter:description" content="BSIT student and full-stack developer. React, Node.js, Express and MySQL." />
     <meta name="twitter:image" content="https://jesler-portfolio.vercel.app/profile.jpg" />
     <link rel="canonical" href="https://jesler-portfolio.vercel.app/" />
+    <script>
+      // Apply the saved theme (or the device setting) before the page paints.
+      (function () {
+        var t
+        try { t = localStorage.getItem('theme') } catch (e) {}
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+        }
+        document.documentElement.dataset.theme = t
+      })()
+    </script>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

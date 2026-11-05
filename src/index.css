@@ -1,72 +1,131 @@
 @import "tailwindcss";
 
+/* `dark:` follows the site toggle, not only the device setting */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Colors are theme tokens: the dark values live here, the light values in
+   :root[data-theme="light"] below. Components only use these names. */
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --color-ink: #07070d;
-  --color-panel: #0e0e18;
-  --color-line: #1d1d2e;
+
+  --color-ink: #0b0c0f;      /* page background */
+  --color-panel: #131419;    /* cards */
+  --color-line: #24262d;     /* borders */
+  --color-fg: #f3f4f6;       /* headings, strong text */
+  --color-soft: #c7cad1;     /* body text */
+  --color-muted: #8a8f99;    /* secondary text */
+  --color-chip: #1b1d23;     /* tag backgrounds */
+  --color-accent: #6ea8fe;   /* links */
+}
+
+:root {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-ink: #f6f7f9;
+  --color-panel: #ffffff;
+  --color-line: #e6e7eb;
+  --color-fg: #111318;
+  --color-soft: #3d424b;
+  --color-muted: #6b7180;
+  --color-chip: #f2f3f5;
+  --color-accent: #2563eb;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
 }
 
 body {
   background: var(--color-ink);
-  color: #d4d4e0;
+  color: var(--color-soft);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 ::selection {
-  background: #8b5cf6;
-  color: white;
+  background: var(--color-fg);
+  color: var(--color-ink);
 }
 
-.text-gradient {
-  background: linear-gradient(90deg, #a78bfa, #22d3ee 50%, #f472b6);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.grid-bg {
-  background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
-  background-size: 44px 44px;
-  mask-image: radial-gradient(ellipse at top, black 30%, transparent 75%);
-}
-
-.glow {
-  filter: blur(90px);
-  opacity: 0.35;
-}
-
+/* Cards fade up the first time they scroll into view */
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .reveal.shown {
   opacity: 1;
   transform: none;
 }
 
-.caret::after {
-  content: "▋";
-  margin-left: 2px;
-  color: #22d3ee;
-  animation: blink 1s steps(1) infinite;
+/* Opening animation */
+.intro {
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
-@keyframes blink {
-  50% { opacity: 0; }
+.intro-out {
+  opacity: 0;
+  visibility: hidden;
+}
+.intro-logo {
+  animation: intro-pop 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.intro-type {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  width: 0;
+  animation: intro-type 0.6s steps(6) 0.25s forwards;
+}
+.intro-bar {
+  width: 0;
+  animation: intro-bar 1.3s ease-in-out 0.2s forwards;
+}
+.intro-sub {
+  opacity: 0;
+  animation: intro-fade 0.5s ease 0.8s forwards;
+}
+@keyframes intro-pop {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+}
+@keyframes intro-type {
+  to { width: 6ch; }
+}
+@keyframes intro-bar {
+  to { width: 100%; }
+}
+@keyframes intro-fade {
+  to { opacity: 1; }
+}
+
+/* Pop-ups (chat, certificate and project viewers) */
+.pop-in {
+  animation: pop-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.chat-panel {
+  transform-origin: bottom right;
+  animation: pop-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+}
+.chat-dot {
+  animation: chat-dot 1.2s ease-in-out infinite;
+}
+.chat-dot:nth-child(2) { animation-delay: 0.15s; }
+.chat-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes chat-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: none; }
+  30% { opacity: 1; transform: translateY(-3px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .caret::after { animation: none; }
+  .pop-in, .chat-panel, .chat-dot { animation: none; }
 }
