@@ -29,7 +29,7 @@ const topics = [
     boost: 3,
     keywords: ['goat', 'g o a t', 'greatest of all time', 'greatest player', 'lebron', 'idol', 'favorite player', 'favourite player', 'paboritong player', 'basketball', 'nba', 'jordan', 'kobe', 'king james'],
     answer: () => ({
-      text: `The GOAT? LeBron James, no debate. 👑🏀\n\n${profile.firstName} will defend this in any argument. Now, want to know about his projects or skills?`,
+      text: 'The GOAT? LeBron James, no debate. 👑🏀',
     }),
   },
   {
