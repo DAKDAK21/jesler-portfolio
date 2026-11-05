@@ -78,6 +78,7 @@ export const projects = [
       'Admin tools: bulk account creation from Excel, class record export, archiving instead of deleting',
     ],
     role: 'Full-stack developer: frontend, backend, database and deployment',
+    team: ['Jesler Guzman', 'Felix Gold Velez', 'Lorenz Carceler', 'Richmond Jabez Panganiban'], // capstone group
     result: 'Defended Oct 31, 2026. Passed with minor revisions, grade 90.',
     stack: ['React', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'MySQL', 'JWT', 'Playwright', 'Render'],
     links: {

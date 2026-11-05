@@ -9,6 +9,7 @@ export const greeting = `Hi there! 👋 I'm ${profile.firstName}'s portfolio ass
 
 export const suggestions = [
   'Tell me about TraiSki',
+  'TraiSki collaborators',
   "What's his tech stack?",
   'Is he available for OJT?',
   'Certifications',
@@ -30,6 +31,19 @@ const topics = [
     keywords: ['goat', 'g o a t', 'greatest of all time', 'greatest player', 'lebron', 'idol', 'favorite player', 'favourite player', 'paboritong player', 'basketball', 'nba', 'jordan', 'kobe', 'king james'],
     answer: () => ({
       text: 'The GOAT? LeBron James, no debate. 👑🏀',
+    }),
+  },
+  {
+    id: 'team',
+    boost: 2,
+    keywords: ['collaborator', 'collaborators', 'collaborative', 'collaborate', 'team', 'teammates', 'members', 'member', 'groupmates', 'group', 'who built', 'who made', 'who created', 'kasama', 'kagrupo', 'ka-grupo', 'kasama niya', 'sino gumawa', 'sino ang gumawa'],
+    answer: () => ({
+      text: traiski.team?.length
+        ? `${traiski.name} was built by a team of ${traiski.team.length} as their capstone project:\n${traiski.team
+            .map((n) => `• ${n}`)
+            .join('\n')}\n\n${profile.firstName} was one of the main developers, working on the frontend, backend, database and deployment.`
+        : `${traiski.name} was a group capstone project.`,
+      links: [traiski.links.live && { label: 'Open TraiSki', href: traiski.links.live }].filter(Boolean),
     }),
   },
   {
