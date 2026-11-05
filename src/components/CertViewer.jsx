@@ -37,7 +37,8 @@ export default function CertViewer({ cert, onClose }) {
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold leading-snug text-fg">{cert.name}</h3>
             <p className="mt-1 flex items-center gap-1.5 text-sm text-muted">
-              <BadgeCheck className="size-4 shrink-0 text-emerald-400" /> {cert.issuer} · {cert.date}
+              {cert.issuer && <BadgeCheck className="size-4 shrink-0 text-emerald-500" />}
+              {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
             </p>
           </div>
           <button
@@ -51,11 +52,13 @@ export default function CertViewer({ cert, onClose }) {
           </button>
         </div>
 
-        <div className="bg-chip p-3 sm:p-5">
+        <div className={`bg-chip p-3 sm:p-5 ${cert.portrait ? 'max-h-[72dvh] overflow-y-auto' : ''}`}>
           <img
             src={cert.image}
-            alt={`Certificate: ${cert.name}`}
-            className="mx-auto max-h-[65dvh] w-auto rounded-lg border border-line bg-white object-contain"
+            alt={cert.alt || `Certificate: ${cert.name}`}
+            className={`mx-auto rounded-lg border border-line bg-white ${
+              cert.portrait ? 'w-full max-w-2xl' : 'max-h-[65dvh] w-auto object-contain'
+            }`}
           />
         </div>
 

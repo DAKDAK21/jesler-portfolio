@@ -82,6 +82,16 @@ export default function Chatbot() {
 
   useEffect(() => () => clearTimeout(timer.current), [])
 
+  // Other parts of the page open the chat with window.dispatchEvent(new Event('open-chat')).
+  useEffect(() => {
+    const onOpen = () => {
+      setOpen(true)
+      setHint(false)
+    }
+    window.addEventListener('open-chat', onOpen)
+    return () => window.removeEventListener('open-chat', onOpen)
+  }, [])
+
   const ask = (text) => {
     const q = text.trim()
     if (!q || typing) return

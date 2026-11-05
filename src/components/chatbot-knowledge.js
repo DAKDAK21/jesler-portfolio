@@ -107,7 +107,7 @@ const topics = [
     keywords: ['resume', 'cv'],
     answer: () =>
       profile.resume
-        ? { text: `Here's ${profile.firstName}'s resume.`, links: [{ label: 'Download resume', href: profile.resume }] }
+        ? { text: `Here's ${profile.firstName}'s resume.`, links: [{ label: 'Download resume', href: profile.resume.pdf }] }
         : {
             text: `${profile.firstName} can send his resume by email. Just ask him!`,
             links: contactLinks.slice(0, 1),

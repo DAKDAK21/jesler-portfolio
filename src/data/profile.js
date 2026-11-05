@@ -12,7 +12,7 @@ export const profile = {
   location: 'Valenzuela City, Metro Manila, Philippines',
   tagline: 'I build web apps end to end, from the database schema to the last pixel of the UI.',
   photo: '/profile.jpg', // put your photo in public/profile.jpg
-  resume: '', // optional: put resume.pdf in public/ and set '/resume.pdf'
+  resume: { image: '/resume.jpg', pdf: '/resume.pdf' }, // shown in a pop-up; set to null to hide the button
   openTo: ['OJT / Internship', 'Junior developer roles', 'Freelance projects'],
   links: {
     linkedin: 'https://www.linkedin.com/in/jeslerguzman/',
@@ -124,6 +124,12 @@ export const certifications = [
 ]
 
 // Shown as a timeline, newest first.
+// Shown at the bottom of the page.
+export const goals = [
+  'Complete my OJT and grow into a full-stack developer who ships software people rely on every day.',
+  'Keep building real systems for real clients, and go deeper into backend architecture and cloud (AWS).',
+]
+
 export const journey = [
   {
     when: '2026',

@@ -1,17 +1,21 @@
 import { useState } from 'react'
 import {
+  ArrowRight,
   Award,
   BriefcaseBusiness,
   ChevronRight,
-  Download,
+  FileText,
   FlaskConical,
   FolderKanban,
+  Goal,
+  Link2,
   Mail,
   MapPin,
+  MessageCircle,
   MessageSquareText,
   UserRound,
 } from 'lucide-react'
-import { about, certifications, journey, profile, projects, skillGroups, stats } from '../data/profile'
+import { about, certifications, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
 import { Card, Chip, GithubIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
 import ProjectViewer from './ProjectViewer'
@@ -31,7 +35,8 @@ const btnOutline =
 
 export function Header() {
   const [photoOk, setPhotoOk] = useState(true)
-  const { email, linkedin, github } = profile.links
+  const [resumeOpen, setResumeOpen] = useState(false)
+  const { email } = profile.links
   const initials = profile.name
     .split(' ')
     .map((p) => p[0])
@@ -54,39 +59,34 @@ export function Header() {
         </div>
 
         <div className="min-w-0">
-          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-            <span className="size-1.5 rounded-full bg-emerald-500" /> Open to OJT / Internship
-          </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-fg sm:text-4xl">{profile.name}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-fg sm:text-4xl">{profile.name}</h1>
           <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
             <MapPin className="size-4 shrink-0" /> {profile.location}
           </p>
           <p className="mt-3 text-lg text-soft">{profile.headline}</p>
 
           <div className="mt-5 flex flex-wrap gap-2.5">
-            {email && (
-              <a href={`mailto:${email}`} className={btnSolid}>
-                <Mail className="size-4" /> Send Email
-              </a>
-            )}
             {profile.resume && (
-              <a href={profile.resume} download className={btnOutline}>
-                <Download className="size-4" /> Resume
-              </a>
+              <button type="button" onClick={() => setResumeOpen(true)} className={`${btnSolid} cursor-pointer`}>
+                <FileText className="size-4" /> View Resume
+              </button>
             )}
-            {linkedin && (
-              <a href={linkedin} target="_blank" rel="noreferrer" className={btnOutline}>
-                <LinkedinIcon className="size-4" /> LinkedIn
-              </a>
-            )}
-            {github && (
-              <a href={github} target="_blank" rel="noreferrer" className={btnOutline}>
-                <GithubIcon className="size-4" /> GitHub
+            {email && (
+              <a href={`mailto:${email}`} className={btnOutline}>
+                <Mail className="size-4" /> Send Email
               </a>
             )}
           </div>
         </div>
       </header>
+      <CertViewer
+        cert={
+          resumeOpen && profile.resume
+            ? { ...profile.resume, name: `${profile.name}: Resume`, portrait: true, alt: `Resume of ${profile.name}` }
+            : null
+        }
+        onClose={() => setResumeOpen(false)}
+      />
     </Reveal>
   )
 }
@@ -228,48 +228,102 @@ export function Certifications() {
   )
 }
 
+function ColumnTitle({ icon: Icon, children }) {
+  return (
+    <h2 className="mb-4 flex items-center gap-2 text-base font-semibold text-fg">
+      <Icon className="size-5 text-muted" /> {children}
+    </h2>
+  )
+}
+
+const tile = 'rounded-xl border border-line bg-panel p-4'
+const linkTile = `group flex items-center gap-3 ${tile} transition hover:border-muted/40 hover:shadow-md`
+
+// Goals, social links and contact, side by side at the bottom of the page.
 export function Contact() {
   const { email, linkedin, github } = profile.links
-  const rows = [
-    email && { icon: Mail, label: 'Email', value: email, href: `mailto:${email}` },
-    linkedin && { icon: LinkedinIcon, label: 'LinkedIn', value: 'linkedin.com/in/jeslerguzman', href: linkedin },
-    github && { icon: GithubIcon, label: 'GitHub', value: github.replace('https://', ''), href: github },
+  const socials = [
+    linkedin && { icon: LinkedinIcon, label: 'LinkedIn', href: linkedin },
+    github && { icon: GithubIcon, label: 'GitHub', href: github },
   ].filter(Boolean)
+  const openChat = () => window.dispatchEvent(new Event('open-chat'))
 
   return (
-    <Card id="contact" icon={MessageSquareText} title="Contact">
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.7fr] lg:items-center">
-        <p className="leading-relaxed text-soft">
-          Actively seeking an OJT / internship, and open to junior developer roles and freelance projects. The fastest
-          way to reach me is by email.
-        </p>
-        <div className="grid gap-3 sm:grid-cols-3">
-          {rows.map((r) => (
-            <a
-              key={r.label}
-              href={r.href}
-              target={r.href.startsWith('http') ? '_blank' : undefined}
-              rel="noreferrer"
-              className="group flex items-center gap-3 rounded-xl border border-line bg-panel p-4 transition hover:border-muted/40 hover:shadow-md"
-            >
-              <r.icon className="size-5 shrink-0 text-fg" />
+    <Reveal>
+      <section id="contact" className="scroll-mt-6 rounded-2xl border border-line bg-panel p-6 shadow-sm sm:p-7">
+        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
+          <div>
+            <ColumnTitle icon={Goal}>Goals</ColumnTitle>
+            <ul className="space-y-3">
+              {goals.map((g) => (
+                <li key={g} className={`${tile} text-sm leading-relaxed text-soft`}>
+                  {g}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <ColumnTitle icon={Link2}>Social Links</ColumnTitle>
+            <div className="space-y-3">
+              {socials.map((x) => (
+                <a key={x.label} href={x.href} target="_blank" rel="noreferrer" className={linkTile}>
+                  <x.icon className="size-5 shrink-0 text-fg" />
+                  <span className="flex-1 text-sm font-medium text-fg">{x.label}</span>
+                  <ChevronRight className="size-4 text-muted transition group-hover:translate-x-0.5" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <ColumnTitle icon={MessageSquareText}>Contact</ColumnTitle>
+            <div className={tile}>
+              <p className="text-sm leading-relaxed text-soft">
+                Actively seeking an OJT / Internship opportunity. Open to junior developer roles and freelance projects
+                too.
+              </p>
+              {email && (
+                <a
+                  href={`mailto:${email}`}
+                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-fg"
+                >
+                  Get in touch <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3 xl:pt-9">
+            {email && (
+              <a href={`mailto:${email}`} className={linkTile}>
+                <Mail className="size-5 shrink-0 text-fg" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-fg">Email</span>
+                  <span className="block truncate text-xs text-muted">{email}</span>
+                </span>
+                <ChevronRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5" />
+              </a>
+            )}
+            <button type="button" onClick={openChat} className={`${linkTile} w-full cursor-pointer text-left`}>
+              <MessageCircle className="size-5 shrink-0 text-fg" />
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-semibold text-fg">{r.label}</span>
-                <span className="block truncate text-xs text-muted">{r.value}</span>
+                <span className="block text-sm font-semibold text-fg">Quick questions?</span>
+                <span className="block truncate text-xs text-muted">Ask my assistant</span>
               </span>
               <ChevronRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5" />
-            </a>
-          ))}
+            </button>
+          </div>
         </div>
-      </div>
-    </Card>
+      </section>
+    </Reveal>
   )
 }
 
 export function Footer() {
   return (
     <footer className="mt-10 border-t border-line pt-6 text-center text-sm text-muted">
-      © {new Date().getFullYear()} {profile.name}. Built with React, Vite & Tailwind CSS.
+      © {new Date().getFullYear()} {profile.name} - All rights reserved.
     </footer>
   )
 }
