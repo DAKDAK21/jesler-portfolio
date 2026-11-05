@@ -79,9 +79,11 @@ const topics = [
   },
   {
     id: 'contact',
-    keywords: ['contact', 'email', 'mail', 'reach', 'message', 'linkedin', 'github', 'call', 'connect', 'talk', 'kontak', 'paano'],
+    keywords: ['contact', 'email', 'mail', 'reach', 'message', 'linkedin', 'github', 'call', 'connect', 'talk', 'kontak', 'paano', 'phone', 'number', 'mobile', 'cellphone', 'numero', 'text'],
     answer: () => ({
       text: `You can reach ${profile.firstName} here:${profile.links.email ? `\n• Email: ${profile.links.email}` : ''}${
+        profile.links.phone ? `\n• Phone: ${profile.links.phone}` : ''
+      }${
         profile.links.linkedin ? '\n• LinkedIn: linkedin.com/in/jeslerguzman' : ''
       }${profile.links.github ? `\n• GitHub: ${profile.links.github.replace('https://', '')}` : ''}`,
       links: contactLinks,

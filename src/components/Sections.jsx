@@ -14,6 +14,7 @@ import {
   MapPin,
   MessageCircle,
   MessageSquareText,
+  Phone,
   UserRound,
 } from 'lucide-react'
 import { about, certifications, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
@@ -253,7 +254,7 @@ const linkTile = `group flex items-center gap-3 ${tile} transition hover:border-
 
 // Goals, social links and contact, side by side at the bottom of the page.
 export function Contact() {
-  const { email, linkedin, github, instagram } = profile.links
+  const { email, phone, linkedin, github, instagram } = profile.links
   const socials = [
     linkedin && { icon: LinkedinIcon, label: 'LinkedIn', href: linkedin },
     github && { icon: GithubIcon, label: 'GitHub', href: github },
@@ -314,6 +315,16 @@ export function Contact() {
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-semibold text-fg">Email</span>
                   <span className="block truncate text-xs text-muted">{email}</span>
+                </span>
+                <ChevronRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5" />
+              </a>
+            )}
+            {phone && (
+              <a href={`tel:+63${phone.replace(/\D/g, '').replace(/^0/, '')}`} className={linkTile}>
+                <Phone className="size-5 shrink-0 text-fg" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-fg">Let's Talk</span>
+                  <span className="block truncate text-xs text-muted">{phone}</span>
                 </span>
                 <ChevronRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5" />
               </a>

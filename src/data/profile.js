@@ -19,6 +19,7 @@ export const profile = {
     github: 'https://github.com/DAKDAK21',
     instagram: 'https://www.instagram.com/jes_gzm/',
     email: 'jesler.guzman210@gmail.com',
+    phone: '0976 636 7027', // shown in Contact; tap to call on phones
   },
 }
 
