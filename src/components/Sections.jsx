@@ -299,7 +299,7 @@ export function Contact() {
               {email && (
                 <a
                   href={`mailto:${email}`}
-                  className="group mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-fg"
+                  className="group mt-2 inline-flex items-center gap-1.5 py-2 text-sm font-semibold text-fg"
                 >
                   Get in touch <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
                 </a>

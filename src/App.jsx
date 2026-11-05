@@ -23,7 +23,7 @@ export default function App() {
         <Header />
 
         <main className="mt-10 space-y-5">
-          <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr]">
+          <div className="grid gap-5 lg:grid-cols-[1.55fr_1fr] [&>*]:min-w-0">
             <div className="space-y-5">
               <About />
               <TechStack />
@@ -31,7 +31,7 @@ export default function App() {
             <Experience />
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-[1.25fr_1fr]">
+          <div className="grid gap-5 lg:grid-cols-[1.25fr_1fr] [&>*]:min-w-0">
             <Projects />
             <Certifications />
           </div>
