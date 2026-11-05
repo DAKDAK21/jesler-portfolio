@@ -129,7 +129,7 @@ export const certifications = [
 // Shown at the bottom of the page.
 export const goals = [
   'Complete my OJT and grow into a full-stack developer who ships software people rely on every day.',
-  'Keep building real systems for real clients, and go deeper into backend architecture and cloud (AWS).',
+  'Keep improving my skills in software development and contribute to projects that make a real difference.',
 ]
 
 export const journey = [

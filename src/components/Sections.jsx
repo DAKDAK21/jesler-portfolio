@@ -284,7 +284,6 @@ export function Contact() {
                 <a key={x.label} href={x.href} target="_blank" rel="noreferrer" className={linkTile}>
                   <x.icon className="size-5 shrink-0 text-fg" />
                   <span className="flex-1 text-sm font-medium text-fg">{x.label}</span>
-                  <ChevronRight className="size-4 text-muted transition group-hover:translate-x-0.5" />
                 </a>
               ))}
             </div>
