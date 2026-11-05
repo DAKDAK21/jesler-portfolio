@@ -226,6 +226,7 @@ export function Journey() {
             </span>
             <h3 className="mt-4 text-xl font-semibold text-white">{profile.courseFull}</h3>
             {profile.school && <p className="mt-1 text-zinc-400">{profile.school}</p>}
+            {profile.schoolYears && <p className="mt-1 font-mono text-xs text-cyan-300">{profile.schoolYears}</p>}
             <p className="mt-3 text-sm leading-relaxed text-zinc-500">
               Focus on web development, databases and building real systems for real clients.
             </p>

@@ -7,6 +7,7 @@ export const profile = {
   course: 'BS Information Technology',
   courseFull: 'Bachelor of Science in Information Technology',
   school: 'STI College Caloocan',
+  schoolYears: '2023 – Expected graduation: August 2027',
   location: 'Philippines',
   tagline: 'I build web apps end to end, from the database schema to the last pixel of the UI.',
   photo: '/profile.jpg', // put your photo in public/profile.jpg
@@ -105,8 +106,19 @@ export const journey = [
     detail: 'SRTVHS planned to start using TraiSki for its online classes in November 2026.',
   },
   {
-    when: 'Present',
-    title: 'BS Information Technology',
-    detail: 'Studying web development, databases, networking and systems analysis and design.',
+    when: '2026',
+    title: 'Collaborative Robot Programming Level III',
+    detail: 'Training and certification from St. Amatiel Technological Institute.',
+  },
+  {
+    when: '2023 – 2027',
+    title: 'BS Information Technology, STI College Caloocan',
+    detail:
+      'Expected graduation August 2027. Coursework in database management systems, systems analysis and design, web development, networking, object-oriented programming and information security.',
+  },
+  {
+    when: '2023',
+    title: 'Senior High School, TVL-ICT, STI College Caloocan',
+    detail: 'Graduated from the Information and Communications Technology strand. Member of the IT student organization.',
   },
 ]
