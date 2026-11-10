@@ -109,8 +109,10 @@ export function About() {
       </div>
       <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {stats.map((s) => (
-          <div key={s.label} className="flex flex-col-reverse rounded-xl border border-line bg-chip px-3 py-3">
-            <dt className="mt-0.5 text-xs leading-snug text-muted">{s.label}</dt>
+          // column-reverse shows the number above its label; justify-end pins both to the top,
+          // so every number lines up even when a label wraps to two lines
+          <div key={s.label} className="flex flex-col-reverse justify-end rounded-xl border border-line bg-chip px-4 py-3.5">
+            <dt className="mt-1 text-xs leading-snug text-muted">{s.label}</dt>
             <dd className="text-2xl font-bold text-fg">{s.value}</dd>
           </div>
         ))}

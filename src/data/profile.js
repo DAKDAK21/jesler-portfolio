@@ -30,10 +30,10 @@ export const about = [
 ]
 
 export const stats = [
-  { value: '130+', label: 'commits on TraiSki' },
-  { value: '4', label: 'user portals built' },
-  { value: '75+', label: 'database migrations' },
-  { value: '90', label: 'capstone defense grade' },
+  { value: '130+', label: 'Commits to TraiSki' },
+  { value: '4', label: 'User portals built' },
+  { value: '75+', label: 'Database migrations' },
+  { value: '90', label: 'Capstone grade' },
 ]
 
 export const skillGroups = [
