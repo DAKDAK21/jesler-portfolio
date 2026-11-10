@@ -3,6 +3,8 @@
      The ordering code (the first script below) is our original 2022 code. Added in 2026 for the portfolio:
      - a self-order kiosk design: welcome screen, category tabs, food cards with drawings, paper receipt
      - ordering by tapping a food card or the Order now button, and ordering again without refreshing
+     - kiosk dialogs instead of the browser's prompt and alert boxes: numbers only, with a digit limit
+       (2 for the menu and quantity, 1 for "order more", 5 for the payment); the order steps still use await
      - pressing Cancel or typing an invalid number no longer traps you in the order loop
      - the menu shows the same prices the cashier charges, and the layout fits phones
      The 2022 page had a plain text menu in this sidebar and a tiled background photo. -->
@@ -313,6 +315,70 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 #receipt p{ margin: 0.2rem 0; white-space: normal; }
 #receipt .order-type{ display: inline-block; margin: 0.4rem 0; padding: 0.1rem 0.6rem; font-weight: 700; border: 2px dashed var(--ink); }
 
+/* Kiosk dialogs (replace the browser's prompt and alert boxes) */
+#dialog{
+	position: fixed;
+	inset: 0;
+	z-index: 40;
+	display: grid;
+	place-items: center;
+	padding: 1rem;
+	background: rgba(43, 24, 16, 0.55);
+}
+#dialog.hidden{ display: none; }
+.dialog-card{
+	display: flex;
+	flex-direction: column;
+	width: min(26rem, 100%);
+	max-height: calc(100vh - 2rem);
+	padding: 1.25rem 1.25rem 1rem;
+	background: var(--cream);
+	border: 5px solid var(--yellow);
+	border-radius: 1.5rem;
+	box-shadow: 0 0.6rem 0 var(--red-dark), 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
+	animation: pop 0.18s ease-out;
+}
+@keyframes pop{ from{ transform: scale(0.94); opacity: 0; } }
+.dialog-title{ font-size: 1.6rem; text-align: center; }
+.dialog-text{
+	margin-top: 0.6rem;
+	overflow-y: auto;
+	font-weight: 700;
+	line-height: 1.45;
+	white-space: pre-line;
+}
+.dialog-field{ margin-top: 0.9rem; }
+.dialog-field.hidden{ display: none; }
+#dialog-input{
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	font-family: "Baloo 2", sans-serif;
+	font-size: 2rem;
+	font-weight: 800;
+	letter-spacing: 0.1em;
+	text-align: center;
+	color: var(--ink);
+	background: #fff;
+	border: 3px solid var(--line);
+	border-radius: 1rem;
+	outline: none;
+}
+#dialog-input:focus{ border-color: var(--red); }
+.dialog-hint{ margin-top: 0.35rem; font-size: 0.85rem; font-weight: 700; text-align: center; color: var(--muted); }
+.dialog-buttons{ display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 1rem; }
+.dialog-buttons.single{ grid-template-columns: 1fr; }
+.dialog-buttons button{
+	padding: 0.65rem;
+	font-family: "Baloo 2", sans-serif;
+	font-size: 1.2rem;
+	font-weight: 800;
+	border-radius: 999px;
+}
+.dialog-cancel{ background: #fff; border: 3px solid var(--line); }
+.dialog-ok{ color: #fff; background: var(--red); border: 0; box-shadow: 0 4px 0 var(--red-dark); }
+.dialog-ok:disabled{ cursor: not-allowed; opacity: 0.45; }
+.dialog-buttons.single .dialog-cancel{ display: none; }
+
 /* Phones */
 @media (max-width: 760px){
 	:root{ --header: 4.25rem; }
@@ -562,23 +628,23 @@ button{ font: inherit; color: inherit; cursor: pointer; }
     }
 
     // First Execution (starts from the Order now button, or from a food card with that food already picked)
-    function startOrder(firstPick) {
+    async function startOrder(firstPick) {
     receiptList = []
-    alert("Hello, ma'am and sir, and welcome to McDollibee! May I have your order?");
+    await say("Hello, ma'am and sir, and welcome to McDollibee! May I have your order?");
     while (true) {
       var chooseOrder
       if (firstPick !== undefined) { chooseOrder = firstPick; firstPick = undefined }
       else {
-        var menuAnswer = prompt(displayMenu)
-        if (menuAnswer === null) { if (receiptList.length) checkOut(); break; }
+        var menuAnswer = await ask(displayMenu, 2)
+        if (menuAnswer === null) { if (receiptList.length) await checkOut(); break; }
         chooseOrder = Number(menuAnswer) - 1
-        if (!arrayFoods[chooseOrder]) { alert("Please type a number from 1 to " + arrayFoods.length + "."); continue; }
+        if (!arrayFoods[chooseOrder]) { await say("Please type a number from 1 to " + arrayFoods.length + "."); continue; }
       }
 
       // Display selected category
-      var getQuantity = Number(prompt("Selected: " + arrayFoods[chooseOrder] + " - P" + arrayPrices[chooseOrder] +
-        "\n\nHow many?"))
-      if (!(getQuantity > 0) || getQuantity % 1 !== 0) { alert("Please type how many you want, like 1 or 2."); continue; }
+      var getQuantity = Number(await ask("Selected: " + arrayFoods[chooseOrder] + " - P" + arrayPrices[chooseOrder] +
+        "\n\nHow many?", 2))
+      if (!(getQuantity > 0) || getQuantity % 1 !== 0) { await say("Please type how many you want, like 1 or 2."); continue; }
 
       var quantedOrder = arrayPrices[chooseOrder] * getQuantity;
 
@@ -586,13 +652,13 @@ button{ font: inherit; color: inherit; cursor: pointer; }
       var orderName = arrayFoods[chooseOrder]
       receiptList.push(new addOrder(getQuantity, orderName, quantedOrder))
       console.table(receiptList)
-      alert(getQuantity + "x " + orderName + " worth P" + quantedOrder +
+      await say(getQuantity + "x " + orderName + " worth P" + quantedOrder +
         "\n\nOrder Confirmed!")
 
       // Order Again or Checkout?
-      var orderAgain = Number(prompt("Do you want to order more?" +
-        "\n1 - Yes\n2 - No"))
-      if (orderAgain != 1) { checkOut(); break; }
+      var orderAgain = Number(await ask("Do you want to order more?" +
+        "\n1 - Yes\n2 - No", 1))
+      if (orderAgain != 1) { await checkOut(); break; }
     }
     }
     // Finalize Receipt
@@ -617,7 +683,7 @@ button{ font: inherit; color: inherit; cursor: pointer; }
       document.getElementById("receipt").scrollIntoView({ behavior: "smooth", block: "center" })
     }
     // Checkout
-    function checkOut() {
+    async function checkOut() {
       var totalItemsInReceipt = 0;
       for (i = 0; i < receiptList.length; i++) {
         totalItemsInReceipt += receiptList[i].orderQuantity
@@ -627,18 +693,18 @@ button{ font: inherit; color: inherit; cursor: pointer; }
         totalAmountDueInReceipt += receiptList[i].orderPrice
       }
 
-      var payAnswer = prompt("Total Items: " + totalItemsInReceipt +
+      var payAnswer = await ask("Total Items: " + totalItemsInReceipt +
         "\nTotal Amount Due: P" + totalAmountDueInReceipt +
-        "\n\nPlease pay at least enough amount to pay:")
-      if (payAnswer === null) { alert("Order cancelled. Tap Order now to start again."); return; }
+        "\n\nPlease pay at least enough amount to pay:", 5)
+      if (payAnswer === null) { await say("Order cancelled. Tap Order now to start again."); return; }
       var payReceipt = Number(payAnswer)
 
       var changeReceipt = payReceipt - totalAmountDueInReceipt
       if (payReceipt >= totalAmountDueInReceipt) finalizeReceipt(totalAmountDueInReceipt, payReceipt, changeReceipt);
       else {
-        alert("Not enough amount to pay the receipt.")
+        await say("Not enough amount to pay the receipt.")
         payReceipt = 0;
-        checkOut();
+        await checkOut();
       }
     }
 	</script>
@@ -650,14 +716,85 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	</main>
 </div>
 
+<div id="dialog" class="hidden" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-text">
+	<form class="dialog-card" id="dialog-form" autocomplete="off">
+		<p class="dialog-title wordmark" id="dialog-title">McDollibee</p>
+		<p class="dialog-text" id="dialog-text"></p>
+		<div class="dialog-field" id="dialog-field">
+			<input id="dialog-input" type="text" inputmode="numeric" pattern="[0-9]*" aria-describedby="dialog-hint">
+			<p class="dialog-hint" id="dialog-hint"></p>
+		</div>
+		<div class="dialog-buttons">
+			<button type="button" class="dialog-cancel" id="dialog-cancel">Cancel</button>
+			<button type="submit" class="dialog-ok" id="dialog-ok">OK</button>
+		</div>
+	</form>
+</div>
+
 <div id="order-bar">
 	<p>Want to see the full menu first?</p>
-	<button type="button" class="order-button" onclick="startOrder()">Order now!</button>
+	<button type="button" class="order-button" onclick="dialogDone || startOrder()">Order now!</button>
 </div>
 
 <script>
 // 2026 kiosk additions. The ordering itself is the original code above (startOrder, checkOut, finalizeReceipt).
 var orderType = "DINE IN"
+
+// Kiosk dialogs. ask() replaces prompt(): numbers only, up to maxLength digits, Cancel gives null.
+// say() replaces alert(). Both return a Promise, so the ordering code waits with await.
+var dialog = document.getElementById("dialog")
+var dialogForm = document.getElementById("dialog-form")
+var dialogText = document.getElementById("dialog-text")
+var dialogField = document.getElementById("dialog-field")
+var dialogInput = document.getElementById("dialog-input")
+var dialogHint = document.getElementById("dialog-hint")
+var dialogOk = document.getElementById("dialog-ok")
+var dialogCancel = document.getElementById("dialog-cancel")
+var dialogButtons = dialogOk.parentElement
+var dialogDone = null
+
+function openDialog(message, maxLength) {
+	return new Promise(function (resolve) {
+		var asking = maxLength > 0
+		dialogText.textContent = message
+		dialogField.classList.toggle("hidden", !asking)
+		dialogButtons.classList.toggle("single", !asking)
+		dialogInput.value = ""
+		dialogInput.maxLength = asking ? maxLength : 524288
+		dialogOk.disabled = asking
+		updateHint()
+		dialogDone = function (answer) {
+			dialog.classList.add("hidden")
+			dialogDone = null
+			resolve(answer)
+		}
+		dialog.classList.remove("hidden")
+		;(asking ? dialogInput : dialogOk).focus()
+	})
+}
+function ask(message, maxLength) { return openDialog(message, maxLength) }
+function say(message) { return openDialog(message, 0) }
+
+function updateHint() {
+	var max = dialogInput.maxLength
+	dialogHint.textContent = "Numbers only · " + dialogInput.value.length + "/" + max + (max == 1 ? " digit" : " digits")
+}
+dialogInput.addEventListener("input", function () {
+	var digits = dialogInput.value.replace(/[^0-9]/g, "").slice(0, dialogInput.maxLength)
+	if (digits !== dialogInput.value) dialogInput.value = digits
+	dialogOk.disabled = digits.length == 0
+	updateHint()
+})
+dialogForm.addEventListener("submit", function (e) {
+	e.preventDefault()
+	if (!dialogDone) return
+	if (dialogField.classList.contains("hidden")) dialogDone(undefined)
+	else if (dialogInput.value) dialogDone(dialogInput.value)
+})
+dialogCancel.addEventListener("click", function () { if (dialogDone) dialogDone(null) })
+document.addEventListener("keydown", function (e) {
+	if (e.key == "Escape" && dialogDone) dialogDone(dialogField.classList.contains("hidden") ? undefined : null)
+})
 
 function chooseEat(type) {
 	orderType = type
@@ -684,7 +821,7 @@ for (var f = 0; f < arrayFoods.length; f++) {
 	var art = pics.length == 1
 		? '<svg viewBox="0 0 100 100"><use href="#' + pics[0] + '"/></svg>'
 		: '<svg viewBox="0 0 160 100"><use href="#' + pics[0] + '" width="100" height="100"/><use href="#' + pics[1] + '" x="60" width="100" height="100"/></svg>'
-	cards += '<button type="button" class="food-card' + (pics.length > 1 ? ' combo' : '') + '" onclick="startOrder(' + f + ')"' +
+	cards += '<button type="button" class="food-card' + (pics.length > 1 ? ' combo' : '') + '" onclick="dialogDone || startOrder(' + f + ')"' +
 		' aria-label="Order ' + arrayFoods[f] + ', ' + arrayPrices[f] + ' pesos">' +
 		(foodTags[f] ? '<span class="tag">' + foodTags[f] + '</span>' : '') +
 		'<span class="food-art">' + art + '</span>' +
