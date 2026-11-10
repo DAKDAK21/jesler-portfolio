@@ -363,8 +363,11 @@ export function Contact() {
 
 export function Footer() {
   return (
-    <footer className="mt-10 border-t border-line pt-6 text-center text-sm text-muted">
-      © {new Date().getFullYear()} {profile.name} - All rights reserved.
+    <footer className="mt-10 flex items-center justify-center gap-2.5 border-t border-line pt-6 text-sm text-muted">
+      <img src="/favicon.svg" alt="" width="24" height="24" className="size-6 shrink-0" />
+      <span>
+        © {new Date().getFullYear()} {profile.name} - All rights reserved.
+      </span>
     </footer>
   )
 }

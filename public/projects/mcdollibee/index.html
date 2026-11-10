@@ -724,9 +724,9 @@ button:disabled{ cursor: not-allowed; }
 			<button type="button" onclick="chooseEat('DINE IN')"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#chicken"/></svg>Dine in</button>
 			<button type="button" onclick="chooseEat('TAKE OUT')"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#bag"/></svg>Take out</button>
 		</div>
-		<p class="credit">A POS simulator by Jesler Guzman &amp; Sean Wesley Santos · ICT-201, 2022<br>
-		A student parody, not connected to any restaurant.<br>
-		<a href="original.html">Try the 2023 version</a> · <a href="/">Back to the portfolio</a></p>
+		<p class="credit">Made by Jesler Guzman &amp; Sean Wesley Santos in Grade 12 (ICT-201), 2022.<br>Rebuilt by Jesler in 2026.<br>
+		A student parody. Not affiliated with any restaurant.<br>
+		<a href="original.html">Try the 2022 version</a> · <a href="/">Back to the portfolio</a></p>
 	</div>
 </div>
 
@@ -734,7 +734,7 @@ button:disabled{ cursor: not-allowed; }
 	<div class="badge-logo" aria-hidden="true"><svg viewBox="0 0 100 100"><use href="#chicken"/></svg></div>
 	<div>
 		<h1><span class="wordmark">McDollibee</span><small>POS Simulator</small></h1>
-		<p>By Guzman and Santos of ICT-201 (S.Y 2022 - 2023)</p>
+		<p>By Guzman &amp; Santos · ICT-201 · S.Y. 2022–2023</p>
 	</div>
 	<button type="button" class="eat-pill" id="eat-pill" onclick="showWelcome()" aria-label="Change dine in or take out">DINE IN</button>
 </div>
@@ -842,8 +842,8 @@ button:disabled{ cursor: not-allowed; }
 var arrayFoods = [
 	"Peach Mango McFlurry", "Hot Fudge Mallow Cake", "Jolly Choco Shake Fries",
 	"McChickenjoy", "Filet-O-Yum Burger", "Jolly McRice Chao",
-	"Jolly McCafe Frappe", "Caramel McFloatbee", "Pineapple Jolly Iced Tea",
-	"McChickenjoy + Jolly McCafe Frappe", "Filet-O-Yum Burger + Caramel McFloatbee", "Jolly McRice Chao + Pineapple Jolly Iced Tea"
+	"Jolly McCafé Frappe", "Caramel McFloatbee", "Pineapple Jolly Iced Tea",
+	"McChickenjoy + Jolly McCafé Frappe", "Filet-O-Yum Burger + Caramel McFloatbee", "Jolly McRice Chao + Pineapple Jolly Iced Tea"
 ]
 var arrayPrices = [
 	19, 32, 26,
@@ -951,7 +951,7 @@ function showItemQty() {
 	$("item-minus").disabled = itemQty <= 1
 	$("item-plus").disabled = itemQty >= room
 	$("item-add").disabled = room <= 0
-	$("item-add").textContent = room <= 0 ? "Max " + MAX_QTY + " in one order" : "Add to order · " + peso(arrayPrices[itemFood] * itemQty)
+	$("item-add").textContent = room <= 0 ? "Limit reached: " + MAX_QTY + " per item" : "Add to order · " + peso(arrayPrices[itemFood] * itemQty)
 }
 function closeItem() { closeSheet("item-backdrop") }
 function addItem() {
@@ -961,7 +961,7 @@ function addItem() {
 	closeItem()
 	renderCart()
 	renderCards()
-	toast(itemQty + "× " + arrayFoods[itemFood] + " added")
+	toast(itemQty + "× " + arrayFoods[itemFood] + " added to your order")
 	$("cart").classList.remove("bump"); void $("cart").offsetWidth; $("cart").classList.add("bump")
 }
 
@@ -1042,9 +1042,9 @@ function setCash(n) { cash = String(n).slice(0, MAX_CASH_DIGITS); showCash() }
 function showCash() {
 	var paid = Number(cash), total = cartTotal(), status = $("pay-status")
 	$("cash-show").textContent = peso(paid)
-	if (!cash) { status.textContent = "Type the cash amount (up to " + MAX_CASH_DIGITS + " digits)"; status.className = "pay-status" }
-	else if (paid < total) { status.textContent = "Not enough yet: " + peso(total - paid) + " more"; status.className = "pay-status short" }
-	else { status.textContent = "Change: " + peso(paid - total); status.className = "pay-status ok" }
+	if (!cash) { status.textContent = "Enter the cash amount (up to " + MAX_CASH_DIGITS + " digits)"; status.className = "pay-status" }
+	else if (paid < total) { status.textContent = "Not enough cash: " + peso(total - paid) + " short"; status.className = "pay-status short" }
+	else { status.textContent = paid == total ? "Exact amount, no change" : "Change: " + peso(paid - total); status.className = "pay-status ok" }
 	$("pay-button").disabled = !cash || paid < total
 }
 function pay() {
@@ -1068,7 +1068,7 @@ function nextOrderNumber() {
 function finalizeReceipt(receiptList, totalAmountDueInReceipt, payReceipt, changeReceipt) {
 	var stringOrder = ""
 	for (var i = 0; i < receiptList.length; i++) {
-		stringOrder += '<div class="r-row"><span>' + receiptList[i].orderQuantity + "x " + receiptList[i].orderName + '</span><span>P' + receiptList[i].orderPrice + '</span></div>'
+		stringOrder += '<div class="r-row"><span>' + receiptList[i].orderQuantity + "x " + receiptList[i].orderName + '</span><span>' + peso(receiptList[i].orderPrice) + '</span></div>'
 	}
 	var now = new Date()
 	$("receipt").innerHTML =
@@ -1077,9 +1077,9 @@ function finalizeReceipt(receiptList, totalAmountDueInReceipt, payReceipt, chang
 		'<div class="r-order">ORDER #' + nextOrderNumber() + ' · ' + orderType + '</div>' +
 		'<div>' + now.toLocaleDateString("en-PH") + ' ' + now.toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" }) + '</div></div>' +
 		'<hr>' + stringOrder + '<hr>' +
-		'<div class="r-row r-big"><span>TOTAL</span><span>P' + totalAmountDueInReceipt + '</span></div>' +
-		'<div class="r-row"><span>CASH</span><span>P' + payReceipt + '</span></div>' +
-		'<div class="r-row r-big"><span>CHANGE</span><span>P' + changeReceipt + '</span></div>' +
+		'<div class="r-row r-big"><span>TOTAL</span><span>' + peso(totalAmountDueInReceipt) + '</span></div>' +
+		'<div class="r-row"><span>CASH</span><span>' + peso(payReceipt) + '</span></div>' +
+		'<div class="r-row r-big"><span>CHANGE</span><span>' + peso(changeReceipt) + '</span></div>' +
 		'<hr><div class="r-center">Salamat po! Come again.</div>'
 }
 function newOrder() {
