@@ -16,7 +16,8 @@ export default function App() {
   return (
     <>
       <Intro />
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-14">
+      {/* Extra bottom space on phones so the chat button never covers the footer */}
+      <div className="mx-auto max-w-6xl px-4 pt-8 pb-28 sm:px-6 sm:py-14">
         <div className="mb-6 flex justify-end sm:mb-0">
           <ThemeToggle />
         </div>

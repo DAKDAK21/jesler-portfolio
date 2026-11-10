@@ -45,7 +45,7 @@ export function Header() {
 
   return (
     <Reveal>
-      <header className="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+      <header className="flex flex-col items-center gap-6 text-center sm:flex-row sm:gap-8 sm:text-left">
         <div className="size-36 shrink-0 overflow-hidden rounded-2xl border border-line bg-panel shadow-sm sm:size-44">
           {photoOk ? (
             <img
@@ -65,12 +65,12 @@ export function Header() {
             Open to OJT / Internship
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-fg sm:text-4xl">{profile.name}</h1>
-          <p className="mt-1.5 flex items-center gap-1.5 text-sm text-muted">
+          <p className="mt-1.5 flex items-center justify-center gap-1.5 text-sm text-muted sm:justify-start">
             <MapPin className="size-4 shrink-0" /> {profile.location}
           </p>
           <p className="mt-3 text-lg text-soft">{profile.headline}</p>
 
-          <div className="mt-5 flex flex-wrap gap-2.5">
+          <div className="mt-5 flex flex-wrap justify-center gap-2.5 sm:justify-start">
             {profile.resume && (
               <button type="button" onClick={() => setResumeOpen(true)} className={`${btnSolid} cursor-pointer`}>
                 <FileText className="size-4" /> View Resume
@@ -217,7 +217,7 @@ export function Certifications() {
               <div className="min-w-0 flex-1">
                 <h3 className="font-semibold leading-snug text-fg">{c.name}</h3>
                 <p className="mt-0.5 text-sm text-muted">
-                  {c.issuer} · {c.date}
+                  {c.issuer} <span className="whitespace-nowrap">· {c.date}</span>
                 </p>
               </div>
               {c.image && (
@@ -363,7 +363,7 @@ export function Contact() {
 
 export function Footer() {
   return (
-    <footer className="mt-10 flex items-center justify-center gap-2.5 border-t border-line pt-6 text-sm text-muted">
+    <footer className="mt-10 flex flex-wrap items-center justify-center gap-2.5 border-t border-line pt-6 text-center text-sm text-muted">
       <img src="/favicon.svg" alt="" width="24" height="24" className="size-6 shrink-0" />
       <span>
         © {new Date().getFullYear()} {profile.name} - All rights reserved.

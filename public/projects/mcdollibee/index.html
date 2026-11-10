@@ -523,9 +523,10 @@ button:disabled{ cursor: not-allowed; }
 		border-radius: 1.5rem 1.5rem 0 0;
 		box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
 		transform: translateY(105%);
-		transition: transform 0.25s ease;
+		visibility: hidden;
+		transition: transform 0.25s ease, visibility 0.25s;
 	}
-	#cart.open{ transform: none; }
+	#cart.open{ transform: none; visibility: visible; }
 	.cart-close{ display: grid; place-items: center; }
 	#cart-shade{ position: fixed; inset: 0; z-index: 44; background: rgba(43, 24, 16, 0.55); }
 }
@@ -554,12 +555,21 @@ button:disabled{ cursor: not-allowed; }
 	#gallery{ padding: 1rem 1rem 2rem; }
 	#gallery > h2{ font-size: 1.7rem; }
 	.category{ scroll-margin-top: calc(var(--header) + 5rem); }
-	#food-grid{ grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.8rem; }
+	#food-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; }
 	.food-art{ width: 6rem; height: 6rem; }
 	.food-art svg{ width: 5.2rem; height: 5.2rem; }
 	.combo .food-art{ width: 8rem; }
 	.combo .food-art svg{ width: 7.6rem; }
 	.quick-cash{ grid-template-columns: repeat(3, 1fr); }
+}
+/* Narrow phones: two cards per row, and the third food of each group sits centered below them */
+@media (max-width: 540px){
+	#food-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.food-card.last-in-group{
+		grid-column: 1 / -1;
+		justify-self: center;
+		width: calc((100% - 0.8rem) / 2);
+	}
 }
 @media (prefers-reduced-motion: reduce){
 	html{ scroll-behavior: auto; }
@@ -903,7 +913,7 @@ function renderCards() {
 	for (var f = 0; f < arrayFoods.length; f++) {
 		if (categoryTitles[f]) html += '<h3 class="category" id="cat-' + f + '">' + categoryTitles[f] + '</h3>'
 		var line = cart.find(function (l) { return l.food == f })
-		html += '<button type="button" class="food-card' + (foodDrawings[f].length > 1 ? ' combo' : '') + '" onclick="openItem(' + f + ')"' +
+		html += '<button type="button" class="food-card' + (foodDrawings[f].length > 1 ? ' combo' : '') + (f % 3 == 2 ? ' last-in-group' : '') + '" onclick="openItem(' + f + ')"' +
 			' aria-label="' + arrayFoods[f] + ', ' + arrayPrices[f] + ' pesos' + (line ? ', ' + line.qty + ' in your order' : '') + '">' +
 			(foodTags[f] ? '<span class="tag">' + foodTags[f] + '</span>' : '') +
 			(line ? '<span class="in-cart">' + line.qty + '</span>' : '') +
