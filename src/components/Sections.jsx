@@ -60,11 +60,8 @@ export function Header() {
         </div>
 
         <div className="min-w-0">
-          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75 motion-reduce:hidden" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-            </span>
+          <p className="inline-flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="blink size-2 rounded-full bg-emerald-500" />
             Open to OJT / Internship
           </p>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-fg sm:text-4xl">{profile.name}</h1>

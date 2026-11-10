@@ -124,8 +124,16 @@ body {
   30% { opacity: 1; transform: translateY(-3px); }
 }
 
+/* Green "Open to OJT" dot in the header */
+.blink {
+  animation: blink 1.2s steps(1, end) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0.15; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .pop-in, .chat-panel, .chat-dot { animation: none; }
+  .pop-in, .chat-panel, .chat-dot, .blink { animation: none; }
 }
