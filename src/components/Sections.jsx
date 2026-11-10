@@ -202,7 +202,7 @@ export function Projects() {
 export function Certifications() {
   const [viewing, setViewing] = useState(null)
   const [showAll, setShowAll] = useState(false)
-  const LIMIT = 6
+  const LIMIT = 3
   const shown = showAll ? certifications : certifications.slice(0, LIMIT)
   return (
     <Card id="certifications" icon={Award} title="Certifications" delay={60}>
