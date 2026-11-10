@@ -575,11 +575,42 @@ button:disabled{ cursor: not-allowed; }
 	html{ scroll-behavior: auto; }
 	*, *::before, *::after{ animation: none !important; transition: none !important; }
 }
+/* Printing the receipt: only the receipt, bigger, plain black on white.
+   No zigzag mask here: phones (iPhone especially) print a masked element as a black box. */
+@page{ size: auto; margin: 0; } /* margin 0 also drops the browser's date and link lines */
 @media print{
+	html, body{ background: #fff !important; }
+	body{ min-height: 0; padding: 14mm 0 0; }
 	body > *:not(#receipt-backdrop){ display: none !important; }
-	#receipt-backdrop{ position: static; background: none; padding: 0; }
-	#receipt-sheet{ border: 0; box-shadow: none; animation: none; }
-	.receipt-actions, #receipt-sheet .sheet-close{ display: none; }
+	#receipt-backdrop{ position: static; display: block; padding: 0; background: none; }
+	#receipt-sheet{
+		width: auto;
+		max-width: none;
+		max-height: none;
+		overflow: visible;
+		padding: 0;
+		background: #fff;
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		animation: none;
+	}
+	#receipt{
+		width: 105mm;
+		margin: 0 auto;
+		padding: 8mm 7mm 9mm;
+		font-size: 14pt;
+		color: #000;
+		background: #fff;
+		border: 1px dashed #000;
+		-webkit-mask: none;
+		        mask: none;
+		animation: none;
+	}
+	#receipt .r-brand{ font-size: 30pt; color: #d7261e; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	#receipt .r-big{ font-size: 15pt; }
+	#receipt hr{ border-top-color: #000; }
+	.receipt-actions, #receipt-sheet .sheet-close{ display: none !important; }
 }
 </style>
 </head>
