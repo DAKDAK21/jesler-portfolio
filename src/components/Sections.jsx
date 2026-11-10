@@ -3,8 +3,10 @@ import {
   ArrowRight,
   ArrowUpRight,
   Award,
+  Bot,
   BriefcaseBusiness,
   ChevronRight,
+  Cloud,
   FileText,
   FlaskConical,
   FolderKanban,
@@ -20,6 +22,7 @@ import {
 import { about, certifications, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
 import { Card, Chip, GithubIcon, InstagramIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
+import CertGroup from './CertGroup'
 
 export const domainOf = (url) => {
   try {
@@ -203,35 +206,62 @@ export function Projects() {
   )
 }
 
+const certIcons = { Cloud, Robotics: Bot }
+
 export function Certifications() {
   const [viewing, setViewing] = useState(null)
-  const [showAll, setShowAll] = useState(false)
-  const LIMIT = 3
-  const shown = showAll ? certifications : certifications.slice(0, LIMIT)
+  const [group, setGroup] = useState(null)
+  const CHIPS = 5
   return (
-    <Card id="certifications" icon={Award} title="Certifications" delay={60}>
+    <Card id="certifications" icon={Award} title="Certifications & Training" delay={60}>
       <ul className="space-y-3">
-        {shown.map((c) => {
+        {certifications.map((c) => {
+          const Icon = certIcons[c.tag] || Award
+          const opens = c.courses?.length || c.image
           const body = (
             <>
-              <div className="min-w-0 flex-1">
-                <h3 className="font-semibold leading-snug text-fg">{c.name}</h3>
-                <p className="mt-0.5 text-sm text-muted">
-                  {c.issuer} <span className="whitespace-nowrap">· {c.date}</span>
-                </p>
-              </div>
-              {c.image && (
-                <ChevronRight className="size-4 shrink-0 text-muted transition group-hover:translate-x-0.5 group-hover:text-fg" />
+              <span className="flex size-11 shrink-0 items-center justify-center self-start rounded-xl border border-line bg-chip text-soft">
+                <Icon className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold leading-snug text-fg">{c.name}</span>
+                <span className="mt-0.5 block text-sm text-muted">
+                  {c.courses ? (
+                    <>
+                      {c.courses.length} courses completed <span className="whitespace-nowrap">· {c.date}</span>
+                    </>
+                  ) : (
+                    <>
+                      {c.issuer} <span className="whitespace-nowrap">· {c.date}</span>
+                    </>
+                  )}
+                </span>
+                {c.courses && (
+                  <span className="mt-2.5 flex flex-wrap gap-1.5">
+                    {c.courses.slice(0, CHIPS).map((course) => (
+                      <span key={course.short} className="rounded-md border border-line bg-chip px-2 py-0.5 text-xs text-soft">
+                        {course.short}
+                      </span>
+                    ))}
+                    {c.courses.length > CHIPS && (
+                      <span className="rounded-md px-1 py-0.5 text-xs font-medium text-muted">+{c.courses.length - CHIPS} more</span>
+                    )}
+                  </span>
+                )}
+              </span>
+              {opens && (
+                <ChevronRight className="size-4 shrink-0 self-center text-muted transition group-hover:translate-x-0.5 group-hover:text-fg" />
               )}
             </>
           )
-          const cls = 'flex w-full items-center gap-3 rounded-xl border border-line bg-panel p-4 text-left'
+          const cls = 'flex w-full items-start gap-3.5 rounded-xl border border-line bg-panel p-4 text-left'
           return (
             <li key={c.name}>
-              {c.image ? (
+              {opens ? (
                 <button
                   type="button"
-                  onClick={() => setViewing({ ...c, bare: true })}
+                  onClick={() => (c.courses ? setGroup(c) : setViewing({ ...c, bare: true }))}
+                  aria-label={c.courses ? `${c.name}: see all ${c.courses.length} course certificates` : undefined}
                   className={`group ${cls} cursor-pointer transition hover:border-muted/40 hover:shadow-md`}
                 >
                   {body}
@@ -243,17 +273,7 @@ export function Certifications() {
           )
         })}
       </ul>
-      {certifications.length > LIMIT && (
-        <button
-          type="button"
-          onClick={() => setShowAll((v) => !v)}
-          aria-expanded={showAll}
-          className="mt-3 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-line px-4 text-sm font-medium text-muted transition hover:border-muted/40 hover:text-fg"
-        >
-          {showAll ? 'Show less' : `Show all ${certifications.length} certificates`}
-          <ChevronRight className={`size-4 transition ${showAll ? '-rotate-90' : 'rotate-90'}`} />
-        </button>
-      )}
+      <CertGroup group={group} onClose={() => setGroup(null)} />
       <CertViewer cert={viewing} onClose={() => setViewing(null)} />
     </Card>
   )
