@@ -107,6 +107,7 @@ export const projects = [
       'Running receipt that adds up the total of every order',
       'Payment check that asks again when the cash is not enough, then computes the change',
       'Receipt built and added to the page with JavaScript',
+      'Updated in 2026: food drawings, tap-a-card ordering and a layout that fits phones',
     ],
     role: 'Co-developer (pair project)',
     team: ['Jesler Guzman', 'Sean Wesley Santos'],
