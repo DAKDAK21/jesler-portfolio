@@ -107,7 +107,7 @@ export const projects = [
       'Running receipt that adds up the total of every order',
       'Payment check that asks again when the cash is not enough, then computes the change',
       'Receipt built and added to the page with JavaScript',
-      'Rebuilt in 2026 as a tap-to-order restaurant POS: cart, cash keypad with live change and a printable receipt (the 2022 version is still playable)',
+      'Rebuilt in 2026 as a tap-to-order restaurant POS: cart, cash keypad with live change and a printable receipt (the original version is still playable)',
     ],
     role: 'Co-developer (pair project)',
     team: ['Jesler Guzman', 'Sean Wesley Santos'],
