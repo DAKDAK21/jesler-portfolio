@@ -86,7 +86,7 @@ const topics = [
   },
   {
     id: 'certs',
-    keywords: ['cert', 'certs', 'certificate', 'certificates', 'certification', 'certifications', 'aws', 'cloud', 'ec2', 'vpc', 'training', 'robot', 'cobot'],
+    keywords: ['cert', 'certs', 'certificate', 'certificates', 'certification', 'certifications', 'aws', 'amazon', 'cloud', 'ec2', 'vpc', 's3', 'lambda', 'iam', 'dynamodb', 'cloudfront', 'kms', 'api gateway', 'audit', 'training', 'robot', 'cobot'],
     answer: () => ({
       text: `${profile.firstName}'s certificates:\n${certifications.map((c) => `• ${c.name} – ${c.issuer}, ${c.date}`).join('\n')}`,
       links: [{ label: 'See certificates', href: '#certifications' }],

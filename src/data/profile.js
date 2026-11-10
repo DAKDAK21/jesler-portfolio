@@ -59,7 +59,7 @@ export const skillGroups = [
     title: 'Tools & DevOps',
     color: 'pink',
     icon: 'wrench',
-    items: ['Git & GitHub', 'Render', 'Vercel', 'AWS (EC2, VPC basics)', 'Playwright (E2E tests)', 'Postman', 'ESLint', 'Figma', 'VS Code'],
+    items: ['Git & GitHub', 'Render', 'Vercel', 'AWS (EC2, VPC, S3, Lambda, IAM, DynamoDB)', 'Playwright (E2E tests)', 'Postman', 'ESLint', 'Figma', 'VS Code'],
   },
 ]
 
@@ -100,6 +100,78 @@ export const projects = [
 
 // Certificates. Optional `image` (shown in a pop-up viewer) and `pdf` (download), both in public/certs/.
 export const certifications = [
+  {
+    name: 'Builder Labs: Introduction to AWS Cloud',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-builder-labs-intro-cloud.jpg',
+    pdf: '/certs/aws-builder-labs-intro-cloud.pdf',
+  },
+  {
+    name: 'Introduction to AWS Identity and Access Management (IAM)',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-iam.jpg',
+    pdf: '/certs/aws-intro-iam.pdf',
+  },
+  {
+    name: 'Introduction to Amazon Simple Storage Service (S3)',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-s3.jpg',
+    pdf: '/certs/aws-intro-s3.pdf',
+  },
+  {
+    name: 'Introduction to AWS Lambda',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-lambda.jpg',
+    pdf: '/certs/aws-intro-lambda.pdf',
+  },
+  {
+    name: 'Introduction to Amazon API Gateway',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-api-gateway.jpg',
+    pdf: '/certs/aws-intro-api-gateway.pdf',
+  },
+  {
+    name: 'Lab - Introduction to Amazon DynamoDB',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-lab-intro-dynamodb.jpg',
+    pdf: '/certs/aws-lab-intro-dynamodb.pdf',
+  },
+  {
+    name: 'Introduction to Amazon CloudFront',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-cloudfront.jpg',
+    pdf: '/certs/aws-intro-cloudfront.pdf',
+  },
+  {
+    name: 'Introduction to AWS Key Management Service',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-intro-kms.jpg',
+    pdf: '/certs/aws-intro-kms.pdf',
+  },
+  {
+    name: 'Performing a Basic Audit of your AWS Environment',
+    issuer: 'AWS Training & Certification',
+    date: 'Nov 2026',
+    tag: 'Cloud',
+    image: '/certs/aws-basic-audit.jpg',
+    pdf: '/certs/aws-basic-audit.pdf',
+  },
   {
     name: 'Introduction to Amazon Virtual Private Cloud (VPC)',
     issuer: 'AWS Training & Certification',

@@ -201,10 +201,13 @@ export function Projects() {
 
 export function Certifications() {
   const [viewing, setViewing] = useState(null)
+  const [showAll, setShowAll] = useState(false)
+  const LIMIT = 6
+  const shown = showAll ? certifications : certifications.slice(0, LIMIT)
   return (
     <Card id="certifications" icon={Award} title="Certifications" delay={60}>
       <ul className="space-y-3">
-        {certifications.map((c) => {
+        {shown.map((c) => {
           const body = (
             <>
               <div className="min-w-0 flex-1">
@@ -236,6 +239,17 @@ export function Certifications() {
           )
         })}
       </ul>
+      {certifications.length > LIMIT && (
+        <button
+          type="button"
+          onClick={() => setShowAll((v) => !v)}
+          aria-expanded={showAll}
+          className="mt-3 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-dashed border-line px-4 text-sm font-medium text-muted transition hover:border-muted/40 hover:text-fg"
+        >
+          {showAll ? 'Show less' : `Show all ${certifications.length} certificates`}
+          <ChevronRight className={`size-4 transition ${showAll ? '-rotate-90' : 'rotate-90'}`} />
+        </button>
+      )}
       <CertViewer cert={viewing} onClose={() => setViewing(null)} />
     </Card>
   )
