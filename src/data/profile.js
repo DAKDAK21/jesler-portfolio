@@ -101,7 +101,7 @@ export const projects = [
     featured: false,
     tagline: 'A fast-food cashier that takes orders and prints a receipt',
     description:
-      'A point-of-sale simulator for a made-up fast-food restaurant, built in Senior High School (ICT-201). It shows a menu of desserts, meals, drinks and combo meals, takes each order and quantity, checks that the cash is enough, then prints a receipt with the total and change.',
+      'A point-of-sale simulator for a made-up fast-food restaurant, built in Grade 12 (ICT-201). It shows a menu of desserts, meals, drinks and combo meals, takes each order and quantity, checks that the cash is enough, then prints a receipt with the total and change.',
     highlights: [
       'Menu, prices and orders stored in arrays and objects',
       'Running receipt that adds up the total of every order',
@@ -109,7 +109,7 @@ export const projects = [
       'Receipt built and added to the page with JavaScript',
     ],
     role: 'Co-developer (pair project)',
-    team: ['Jesler Guzman', 'Santos'],
+    team: ['Jesler Guzman', 'Sean Wesley Santos'],
     note: 'School project · 2022', // shown instead of a link
     stack: ['HTML', 'CSS', 'JavaScript'],
     links: { live: '', code: '' },
