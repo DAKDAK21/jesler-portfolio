@@ -1,0 +1,223 @@
+<!Doctype html>
+<!-- McDollibee POS Simulator by Jesler Guzman and Sean Wesley Santos, ICT-201, October 2022.
+     Original code, with two changes for the portfolio: the logo replaces the old background photo,
+     and pressing Cancel or typing an invalid number no longer traps you in the order loop. -->
+	<html>
+	<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>GUZMAN AND SANTOS(-_McDollibee POS Simulator_-)</title>
+	<style type="text/css">	
+*{
+    padding: 0;
+    margin: 0;
+}
+html{
+	height: 100%;
+}
+body{
+	height: 90%;
+	width: 60%;
+	background-image: url('MC.png');
+	background-position: center;
+	background-color: orange;
+	background-size: 15em;
+	background-color: visible;
+}
+.container{
+	display: flex;
+	grid-template-columns: 250px 1fr 300px;
+	height: 90%;
+	overflow: hidden;
+}
+/* Menu Design */
+#menu{
+	background: indianred;
+	text-align: center;
+	border-style: solid;
+	border-width: 10px;
+	font-family: cursive;
+	color: black;
+	border-left: ridge;
+	background-image: url('MC.png');
+   	background-size: 3%;
+    background-position: center;
+}
+body{
+	width: 50em;
+}
+    #title-section {
+    line-height: 2em;
+    color: black;
+    text-align: center;
+    width: 95em;
+    font-family: cursive;
+    font-style: bold;
+    background-color: indianred;
+    border-style: solid;
+    border-top: ridge;
+    border-width: 10px;
+    border-left: ridge;
+    background-image: url('MC.png');
+   	background-size: 2%;
+    background-position: center;
+}
+    #title-section p {
+    font-style: italic;
+	font-family: sans-serif;
+    color: red;
+	font-size: 15px;
+	width: 101em;
+	color: black;
+}
+    #receipt {
+    	background-color: indianred;
+    	text-align: center;
+    	width: 21.6em;
+    	font-family: cursive;
+    	font-style: italic;
+    	border-style: solid;
+    	border-width: 10px;
+    	border-style: solid;
+    	border-left: ridge;
+    	color: black;
+    	background-image: url('MC.png');
+    	background-size: 3%;
+    	background-position: center;
+    }
+	</style>
+    </head>
+    <div id="title-section">
+    <h1><i>"_ALVIN_POS_Simulator_"</i></h1>
+	<p><b>By Guzman and Santos of ICT-201 (S.Y 2022 - 2023)</p></b>		
+    </div>
+	<div id="container"
+	class="container">
+	<div id="menu">
+	<h1><i> Menu </i></h1>
+	<h1><i>DESSERTS!</i></h2>
+	<p>Mango Monday...19</p>
+	<p>Choconana Cake...39</p>
+	<p>Chocolate fries...26</p>
+	<h1><i>MEALS!</i></h2>
+	<p>McJolly Chicken...49</p>
+	<p>Crispy Fish Burger...49</p>
+	<p>McChao...59</p>
+	<h1><i>DRINKS!</i></h2>
+	<p>Coke Frappe...36 </p>
+	<p>Caramel Bee Float..47</p>
+	<p>Iced Monday...27</p>
+	<h1><i>COMBO MEALS!</i></h2>
+	<p>McJolly Chicken with CokeFrappe...85  </p>
+	<p>Crispy Fish Burger with Caramel Bee Float...96 </p>
+	<p>McChao with Iced Monday...86</p>
+	<script type="text/javascript">
+    // Categories
+    var arrayCategories = ["Signature Meals", "Beverages", "Desserts"]
+
+    // Foods and Prices
+    var arrayFoods = [
+      "Mango Monday", "Choconana Cake", "Chocolate Fries",
+      "McJollyChicken", "Crispy Fish Burger", "McChao",
+      "Coke Frappe", "Caramel Bee Float", "Iced Monday",
+      "McJolly Chicken + Coke Frappe", "Crispy Fish Burger + Caramel Bee Float", "McChao + Iced Monday"
+     ]
+    var arrayPrices = [
+      19, 32, 26,
+      49, 49, 59,
+      36, 47, 22,
+      85, 96, 86
+     ]
+    // Receipt List
+    var receiptList = []
+
+    // Add Order to Receipt Constructor
+    function addOrder(orderQuantity, orderName, orderPrice) {
+      this.orderQuantity = orderQuantity;
+      this.orderName = orderName;
+      this.orderPrice = orderPrice;
+    }
+
+    // Display Menu
+    var displayMenu = "";
+    for (var i = 0; i < arrayFoods.length; i++) {
+      if (i == 0) displayMenu += "DESSERTS:\n"
+      if (i == 3) displayMenu += "\nMEALS:\n"
+      if (i == 6) displayMenu += "\nDRINKS:\n"
+      if (i == 9) displayMenu += "\nCOMBO:\n"
+      displayMenu += (i + 1) + ": " + arrayFoods[i] + " - P" + arrayPrices[i] + "\n"
+    }
+
+    // First Execution
+    alert("Hello, ma'am and sir, and welcome to McDollibee! May I have your order?");
+    while (true) {
+      var menuAnswer = prompt(displayMenu)
+      if (menuAnswer === null) { if (receiptList.length) checkOut(); break; }
+      var chooseOrder = Number(menuAnswer) - 1
+      if (!arrayFoods[chooseOrder]) { alert("Please type a number from 1 to " + arrayFoods.length + "."); continue; }
+
+      // Display selected category
+      var getQuantity = Number(prompt("Selected: " + arrayFoods[chooseOrder] + " - P" + arrayPrices[chooseOrder] +
+        "\n\nHow many?"))
+      if (!(getQuantity > 0) || getQuantity % 1 !== 0) { alert("Please type how many you want, like 1 or 2."); continue; }
+
+      var quantedOrder = arrayPrices[chooseOrder] * getQuantity;
+
+      //Confirm Order
+      var orderName = arrayFoods[chooseOrder]
+      receiptList.push(new addOrder(getQuantity, orderName, quantedOrder))
+      console.table(receiptList)
+      alert(getQuantity + "x " + orderName + " worth P" + quantedOrder +
+        "\n\nOrder Confirmed!")
+
+      // Order Again or Checkout?
+      var orderAgain = Number(prompt("Do you want to order more?" +
+        "\n1 - Yes\n2 - No"))
+      if (orderAgain != 1) { checkOut(); break; }
+    }
+    // Finalize Receipt
+    function finalizeReceipt(totalAmountDueInReceipt, payReceipt, changeReceipt) {
+      var stringOrder = "";
+      for (i = 0; i < receiptList.length; i++) stringOrder += "<p>" + receiptList[i].orderQuantity + "x " + receiptList[i].orderName + " - P" + receiptList[i].orderPrice + "</p>";
+      document.body.innerHTML +=
+        `<div id="receipt">
+          <h2>McDollibee</h2>
+          <h3>Guzman & Santos POS</h3>
+          <br>======================================
+          <h3>QTY\t\t-\t\t\tNAME\t\t\t-\t\tVALUE</h3>
+          ${stringOrder}
+          <br>======================================
+          <h3>TOTAL: P${totalAmountDueInReceipt}</h3>
+          <h3>CASH: P${payReceipt}</h3>
+          <h3>CHANGE: P${changeReceipt}</h3>
+        </div>`
+    }
+    // Checkout
+    function checkOut() {
+      var totalItemsInReceipt = 0;
+      for (i = 0; i < receiptList.length; i++) {
+        totalItemsInReceipt += receiptList[i].orderQuantity
+      }
+      var totalAmountDueInReceipt = 0;
+      for (i = 0; i < receiptList.length; i++) {
+        totalAmountDueInReceipt += receiptList[i].orderPrice
+      }
+
+      var payAnswer = prompt("Total Items: " + totalItemsInReceipt +
+        "\nTotal Amount Due: P" + totalAmountDueInReceipt +
+        "\n\nPlease pay at least enough amount to pay:")
+      if (payAnswer === null) { alert("Order cancelled. Refresh the page to order again."); return; }
+      var payReceipt = Number(payAnswer)
+
+      var changeReceipt = payReceipt - totalAmountDueInReceipt
+      if (payReceipt >= totalAmountDueInReceipt) finalizeReceipt(totalAmountDueInReceipt, payReceipt, changeReceipt);
+      else {
+        alert("Not enough amount to pay the receipt.")
+        payReceipt = 0;
+        checkOut();
+      }
+    }
+	</script>	
+	</div>
+    </body>
+    </html>

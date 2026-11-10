@@ -110,9 +110,9 @@ export const projects = [
     ],
     role: 'Co-developer (pair project)',
     team: ['Jesler Guzman', 'Sean Wesley Santos'],
-    note: 'School project · 2022', // shown instead of a link
+    note: 'Play it · School project 2022', // shown instead of the link address
     stack: ['HTML', 'CSS', 'JavaScript'],
-    links: { live: '', code: '' },
+    links: { live: '/projects/mcdollibee/index.html', code: '' }, // the original 2022 page, in public/projects/mcdollibee/
   },
 ]
 

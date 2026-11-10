@@ -177,7 +177,7 @@ export function Projects() {
               <p className="mt-1 flex-1 text-sm leading-snug text-muted">{p.tagline}</p>
               <span className="mt-3 inline-flex max-w-full items-center gap-1.5 truncate rounded-md border border-line bg-chip px-2 py-1 font-mono text-xs text-soft">
                 <span className={`size-1.5 shrink-0 rounded-full ${link ? 'bg-emerald-500' : p.note ? 'bg-muted' : 'bg-amber-500'}`} />
-                {link ? domainOf(link) : p.note || 'Live demo soon'}
+                {p.note || (link ? domainOf(link) : 'Live demo soon')}
               </span>
             </>
           )

@@ -67,7 +67,10 @@ const topics = [
       const pos = projects.find((p) => p.name.includes('POS'))
       return {
         text: `${pos.name} is one of ${profile.firstName}'s first programs, made in 2022 with his classmate ${pos.team?.[1] || ''}. ${pos.description}\n\nBuilt with ${pos.stack.join(', ')}.`,
-        links: [{ label: 'See projects', href: '#projects' }],
+        links: [
+          pos.links.live && { label: 'Play the POS', href: pos.links.live },
+          { label: 'See projects', href: '#projects' },
+        ].filter(Boolean),
       }
     },
   },
