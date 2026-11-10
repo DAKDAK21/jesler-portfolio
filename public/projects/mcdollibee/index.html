@@ -1,18 +1,14 @@
 <!doctype html>
-<!-- McDollibee POS Simulator by Jesler Guzman and Sean Wesley Santos, ICT-201, October 2022.
-     The ordering code (the first script below) is our original 2022 code. Added in 2026 for the portfolio:
-     - a self-order kiosk design: welcome screen, category tabs, food cards with drawings, paper receipt
-     - ordering by tapping a food card or the Order now button, and ordering again without refreshing
-     - kiosk dialogs instead of the browser's prompt and alert boxes: numbers only, with a digit limit
-       (2 for the menu and quantity, 1 for "order more", 5 for the payment); the order steps still use await
-     - pressing Cancel or typing an invalid number no longer traps you in the order loop
-     - the menu shows the same prices the cashier charges, and the layout fits phones
-     The 2022 page had a plain text menu in this sidebar and a tiled background photo. -->
+<!-- McDollibee POS Simulator by Jesler Guzman and Sean Wesley Santos.
+     2022: built in Grade 12 (ICT-201) as a prompt-box cashier. That version is kept in original.html.
+     2026: rebuilt by Jesler as a tap-to-order restaurant POS: menu cards, cart, cash keypad and receipt.
+     The menu data (arrayFoods, arrayPrices) and the addOrder receipt constructor come from the 2022 code. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>McDollibee POS Simulator · Guzman &amp; Santos</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
@@ -26,25 +22,60 @@
 	--line: #f1dfbd;
 	--ink: #2b1810;
 	--muted: #7a5c48;
+	--green: #1f8a4c;
 	--header: 5.25rem;
 }
 *{ box-sizing: border-box; margin: 0; padding: 0; }
 html{ scroll-behavior: smooth; }
 body{
 	min-height: 100vh;
-	padding-bottom: 6rem;
 	font-family: "Nunito", system-ui, sans-serif;
 	color: var(--ink);
 	background: var(--cream);
 }
 button{ font: inherit; color: inherit; cursor: pointer; }
-.display{ font-family: "Baloo 2", "Nunito", sans-serif; }
+button:disabled{ cursor: not-allowed; }
+:focus-visible{ outline: 3px solid var(--ink); outline-offset: 2px; }
+.wordmark{
+	font-family: "Baloo 2", sans-serif;
+	font-weight: 800;
+	line-height: 1;
+	color: var(--red);
+	letter-spacing: -0.02em;
+}
+.big-button{
+	padding: 0.75rem 1.4rem;
+	font-family: "Baloo 2", sans-serif;
+	font-size: 1.2rem;
+	font-weight: 800;
+	color: #fff;
+	background: var(--red);
+	border: 0;
+	border-radius: 999px;
+	box-shadow: 0 5px 0 var(--red-dark);
+	transition: transform 0.12s, background 0.12s, opacity 0.12s;
+}
+.big-button:hover:not(:disabled){ background: #e8392f; }
+.big-button:active:not(:disabled){ transform: translateY(3px); box-shadow: 0 2px 0 var(--red-dark); }
+.big-button:disabled{ opacity: 0.4; }
+.big-button.green{ background: var(--green); box-shadow: 0 5px 0 #14623a; }
+.big-button.green:hover:not(:disabled){ background: #239b56; }
+.plain-button{
+	padding: 0.7rem 1.2rem;
+	font-family: "Baloo 2", sans-serif;
+	font-size: 1.1rem;
+	font-weight: 800;
+	background: #fff;
+	border: 3px solid var(--line);
+	border-radius: 999px;
+}
+.plain-button:hover{ border-color: var(--red); }
 
 /* Welcome screen */
 #welcome{
 	position: fixed;
 	inset: 0;
-	z-index: 50;
+	z-index: 60;
 	display: grid;
 	place-items: center;
 	padding: 1.5rem;
@@ -69,13 +100,6 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 .welcome-food svg:nth-child(2){ animation-delay: 0.3s; }
 .welcome-food svg:nth-child(3){ animation-delay: 0.6s; }
 @keyframes bob{ 50%{ transform: translateY(-8px) rotate(-3deg); } }
-.wordmark{
-	font-family: "Baloo 2", sans-serif;
-	font-weight: 800;
-	line-height: 1;
-	color: var(--red);
-	letter-spacing: -0.02em;
-}
 .welcome-card .wordmark{ font-size: clamp(2.6rem, 9vw, 3.6rem); text-shadow: 3px 3px 0 var(--yellow); }
 .welcome-card h2{ margin-top: 1.25rem; font-family: "Baloo 2", sans-serif; font-size: 1.5rem; }
 .eat-choice{ display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-top: 1rem; }
@@ -96,7 +120,7 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 .eat-choice button:hover{ border-color: var(--red); transform: translateY(-3px); }
 .eat-choice button:active{ transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
 .eat-choice svg{ width: 4.5rem; height: 4.5rem; }
-.credit{ margin-top: 1.25rem; font-size: 0.85rem; color: var(--muted); }
+.credit{ margin-top: 1.25rem; font-size: 0.85rem; line-height: 1.6; color: var(--muted); }
 .credit a{ color: var(--red); font-weight: 800; }
 
 /* Header */
@@ -140,22 +164,24 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	border-radius: 999px;
 }
 
-/* Layout */
+/* Layout: tabs | menu | my order */
 .container{
 	display: grid;
-	grid-template-columns: 12.5rem 1fr;
+	grid-template-columns: 12rem minmax(0, 1fr) 21rem;
+	gap: 0 1.25rem;
 	align-items: start;
-	max-width: 68rem;
+	max-width: 84rem;
 	margin: 0 auto;
+	padding: 0 1.25rem;
 }
 
-/* Category tabs (the 2022 text menu lived here) */
+/* Category tabs */
 #menu{
 	position: sticky;
 	top: calc(var(--header) + 6px);
 	display: grid;
 	gap: 0.6rem;
-	padding: 1.25rem 0.9rem;
+	padding: 1.25rem 0;
 }
 #menu h2{ padding-left: 0.4rem; font-family: "Baloo 2", sans-serif; font-size: 1.1rem; color: var(--muted); }
 .tab{
@@ -184,7 +210,7 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 .tab-icon svg{ width: 2.3rem; height: 2.3rem; }
 
 /* Food cards */
-#gallery{ padding: 1.5rem 1.5rem 2rem 0.5rem; }
+#gallery{ padding: 1.5rem 0 2.5rem; }
 #gallery > h2{ font-family: "Baloo 2", sans-serif; font-size: 2.1rem; line-height: 1.1; color: var(--red); }
 #gallery > p{ margin-top: 0.2rem; color: var(--muted); font-weight: 700; }
 .category{
@@ -246,6 +272,18 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	background: var(--red);
 	border-radius: 50%;
 }
+.in-cart{
+	position: absolute;
+	top: 0.6rem;
+	right: 0.6rem;
+	min-width: 1.7rem;
+	padding: 0.1rem 0.45rem;
+	font-weight: 800;
+	font-size: 0.85rem;
+	color: #fff;
+	background: var(--green);
+	border-radius: 999px;
+}
 .tag{
 	position: absolute;
 	top: 0.6rem;
@@ -260,63 +298,87 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	box-shadow: 2px 2px 0 var(--red-dark);
 }
 
-/* Bottom order bar */
-#order-bar{
+/* My order */
+#cart{
+	position: sticky;
+	top: calc(var(--header) + 6px + 1.25rem);
+	display: flex;
+	flex-direction: column;
+	max-height: calc(100vh - var(--header) - 2.75rem);
+	margin-top: 1.25rem;
+	background: #fff;
+	border: 2px solid var(--line);
+	border-radius: 1.5rem;
+	box-shadow: 0 6px 0 var(--line);
+}
+.cart-head{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 1.1rem 0.75rem;
+	border-bottom: 2px dashed var(--line);
+}
+.cart-head h2{ font-family: "Baloo 2", sans-serif; font-size: 1.5rem; }
+.cart-type{ font-size: 0.8rem; font-weight: 800; padding: 0.2rem 0.6rem; background: var(--yellow-soft); border-radius: 999px; }
+.cart-close{ display: none; width: 2.2rem; height: 2.2rem; font-size: 1.3rem; font-weight: 800; background: var(--cream); border: 0; border-radius: 50%; }
+#cart-lines{ flex: 1; overflow-y: auto; padding: 0.4rem 1.1rem; list-style: none; }
+.cart-empty{ display: grid; justify-items: center; gap: 0.4rem; padding: 1.5rem 0.5rem; text-align: center; font-weight: 700; color: var(--muted); }
+.cart-empty svg{ width: 4rem; height: 4rem; opacity: 0.55; }
+.cart-line{
+	display: grid;
+	grid-template-columns: 2.6rem 1fr auto;
+	gap: 0.15rem 0.6rem;
+	align-items: center;
+	padding: 0.65rem 0;
+	border-bottom: 1px solid var(--line);
+}
+.cart-line:last-child{ border-bottom: 0; }
+.cart-line svg{ grid-row: span 2; width: 2.6rem; height: 2.6rem; }
+.line-name{ font-weight: 800; line-height: 1.2; }
+.line-total{ font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 1.1rem; }
+.stepper{ display: inline-flex; align-items: center; gap: 0.35rem; }
+.stepper button{
+	display: grid;
+	place-items: center;
+	width: 1.9rem;
+	height: 1.9rem;
+	font-size: 1.15rem;
+	font-weight: 800;
+	line-height: 1;
+	background: var(--cream);
+	border: 2px solid var(--line);
+	border-radius: 50%;
+}
+.stepper button:hover:not(:disabled){ border-color: var(--red); }
+.stepper button:disabled{ opacity: 0.35; }
+.stepper output{ min-width: 1.6rem; text-align: center; font-weight: 800; }
+.line-remove{ justify-self: end; font-size: 0.8rem; font-weight: 800; color: var(--red); background: none; border: 0; text-decoration: underline; }
+.cart-foot{ padding: 0.9rem 1.1rem 1.1rem; border-top: 2px dashed var(--line); }
+.cart-total{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.8rem; font-weight: 800; }
+.cart-total strong{ font-family: "Baloo 2", sans-serif; font-size: 1.8rem; color: var(--red); }
+.cart-foot .big-button{ width: 100%; }
+.cart-clear{ display: block; margin: 0.6rem auto 0; font-size: 0.85rem; font-weight: 800; color: var(--muted); background: none; border: 0; text-decoration: underline; }
+@keyframes bump{ 40%{ transform: scale(1.06); } }
+.bump{ animation: bump 0.3s ease; }
+
+/* Bottom bar that opens the order on tablets and phones */
+#cart-bar{
 	position: fixed;
 	right: 0;
 	bottom: 0;
 	left: 0;
-	z-index: 20;
-	display: flex;
-	align-items: center;
-	gap: 1rem;
-	padding: 0.85rem 1.25rem;
+	z-index: 25;
+	display: none;
+	padding: 0.75rem 1rem;
 	background: #fff;
 	border-top: 3px solid var(--line);
 	box-shadow: 0 -6px 20px rgba(43, 24, 16, 0.08);
 }
-#order-bar p{ font-weight: 700; color: var(--muted); }
-.order-button{
-	margin-left: auto;
-	flex: none;
-	padding: 0.7rem 1.6rem;
-	font-family: "Baloo 2", sans-serif;
-	font-size: 1.25rem;
-	font-weight: 800;
-	color: #fff;
-	background: var(--red);
-	border: 0;
-	border-radius: 999px;
-	box-shadow: 0 5px 0 var(--red-dark);
-	transition: transform 0.12s, background 0.12s;
-}
-.order-button:hover{ background: #e8392f; }
-.order-button:active{ transform: translateY(3px); box-shadow: 0 2px 0 var(--red-dark); }
+#cart-bar .big-button{ display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: 100%; }
+.bar-count{ display: inline-grid; place-items: center; min-width: 1.8rem; height: 1.8rem; margin-right: 0.4rem; color: var(--red); background: #fff; border-radius: 999px; font-size: 1rem; }
 
-/* Paper receipt */
-#receipt{
-	width: min(25rem, calc(100% - 2rem));
-	overflow: hidden;
-	white-space: nowrap;
-	margin: 1rem auto 2rem;
-	padding: 1.5rem 1.25rem 2rem;
-	font-family: "Courier New", ui-monospace, monospace;
-	font-size: 0.95rem;
-	text-align: center;
-	background: #fff;
-	box-shadow: 0 8px 24px rgba(43, 24, 16, 0.15);
-	-webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 16px 100%;
-	        mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 16px 100%;
-	animation: print 0.6s ease-out;
-}
-@keyframes print{ from{ transform: translateY(-1.5rem); opacity: 0; } }
-#receipt h2{ font-family: "Baloo 2", sans-serif; font-size: 1.8rem; color: var(--red); }
-#receipt h3{ font-size: 0.95rem; }
-#receipt p{ margin: 0.2rem 0; white-space: normal; }
-#receipt .order-type{ display: inline-block; margin: 0.4rem 0; padding: 0.1rem 0.6rem; font-weight: 700; border: 2px dashed var(--ink); }
-
-/* Kiosk dialogs (replace the browser's prompt and alert boxes) */
-#dialog{
+/* Pop-ups: food details, payment, receipt */
+.backdrop{
 	position: fixed;
 	inset: 0;
 	z-index: 40;
@@ -325,59 +387,148 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	padding: 1rem;
 	background: rgba(43, 24, 16, 0.55);
 }
-#dialog.hidden{ display: none; }
-.dialog-card{
-	display: flex;
-	flex-direction: column;
-	width: min(26rem, 100%);
+.backdrop[hidden]{ display: none; }
+.sheet{
+	position: relative;
+	width: min(27rem, 100%);
 	max-height: calc(100vh - 2rem);
-	padding: 1.25rem 1.25rem 1rem;
+	overflow-y: auto;
+	padding: 1.4rem 1.3rem 1.2rem;
 	background: var(--cream);
 	border: 5px solid var(--yellow);
-	border-radius: 1.5rem;
+	border-radius: 1.75rem;
 	box-shadow: 0 0.6rem 0 var(--red-dark), 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
 	animation: pop 0.18s ease-out;
 }
 @keyframes pop{ from{ transform: scale(0.94); opacity: 0; } }
-.dialog-title{ font-size: 1.6rem; text-align: center; }
-.dialog-text{
-	margin-top: 0.6rem;
-	overflow-y: auto;
-	font-weight: 700;
-	line-height: 1.45;
-	white-space: pre-line;
-}
-.dialog-field{ margin-top: 0.9rem; }
-.dialog-field.hidden{ display: none; }
-#dialog-input{
-	width: 100%;
-	padding: 0.5rem 0.75rem;
-	font-family: "Baloo 2", sans-serif;
-	font-size: 2rem;
+.sheet-close{
+	position: absolute;
+	top: 0.7rem;
+	right: 0.7rem;
+	width: 2.3rem;
+	height: 2.3rem;
+	font-size: 1.3rem;
 	font-weight: 800;
-	letter-spacing: 0.1em;
-	text-align: center;
-	color: var(--ink);
+	background: #fff;
+	border: 2px solid var(--line);
+	border-radius: 50%;
+}
+.sheet h2{ font-family: "Baloo 2", sans-serif; font-size: 1.6rem; line-height: 1.15; text-align: center; }
+
+/* Food details */
+.item-art{ display: grid; place-items: center; margin: 0 auto; width: 10rem; height: 10rem; background: radial-gradient(circle, var(--yellow-soft) 62%, transparent 63%); }
+.item-art svg{ width: 9rem; height: 9rem; }
+.item-art.combo{ width: 14rem; background: radial-gradient(ellipse 50% 50%, var(--yellow-soft) 96%, transparent 98%); }
+.item-art.combo svg{ width: 13rem; }
+.item-price{ margin-top: 0.1rem; text-align: center; font-family: "Baloo 2", sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--red); }
+.item-qty{ display: flex; justify-content: center; margin: 1rem 0 1.2rem; }
+.item-qty .stepper{ gap: 1rem; }
+.item-qty .stepper button{ width: 3rem; height: 3rem; font-size: 1.6rem; background: #fff; border-width: 3px; }
+.item-qty output{ min-width: 3rem; font-family: "Baloo 2", sans-serif; font-size: 2.2rem; }
+#item-add{ width: 100%; }
+
+/* Payment */
+.pay-due{ display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.8rem; font-weight: 800; }
+.pay-due strong{ font-family: "Baloo 2", sans-serif; font-size: 1.6rem; color: var(--red); }
+.cash-screen{
+	margin-top: 0.6rem;
+	padding: 0.4rem 0.9rem;
+	text-align: right;
+	font-family: "Baloo 2", sans-serif;
+	font-size: 2.4rem;
+	font-weight: 800;
 	background: #fff;
 	border: 3px solid var(--line);
 	border-radius: 1rem;
-	outline: none;
 }
-#dialog-input:focus{ border-color: var(--red); }
-.dialog-hint{ margin-top: 0.35rem; font-size: 0.85rem; font-weight: 700; text-align: center; color: var(--muted); }
-.dialog-buttons{ display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 1rem; }
-.dialog-buttons.single{ grid-template-columns: 1fr; }
-.dialog-buttons button{
-	padding: 0.65rem;
+.cash-screen small{ float: left; margin-top: 0.9rem; font-family: "Nunito", sans-serif; font-size: 0.8rem; color: var(--muted); }
+.pay-status{ min-height: 1.5rem; margin-top: 0.35rem; text-align: center; font-weight: 800; color: var(--muted); }
+.pay-status.short{ color: var(--red); }
+.pay-status.ok{ color: var(--green); }
+.quick-cash{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; margin-top: 0.6rem; }
+.quick-cash button{ padding: 0.45rem 0; font-weight: 800; font-size: 0.9rem; background: var(--yellow-soft); border: 2px solid var(--yellow); border-radius: 0.8rem; }
+.quick-cash button:hover{ background: var(--yellow); }
+.numpad{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.7rem; }
+.numpad button{
+	padding: 0.6rem 0;
 	font-family: "Baloo 2", sans-serif;
-	font-size: 1.2rem;
+	font-size: 1.6rem;
 	font-weight: 800;
-	border-radius: 999px;
+	background: #fff;
+	border: 2px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 4px 0 var(--line);
 }
-.dialog-cancel{ background: #fff; border: 3px solid var(--line); }
-.dialog-ok{ color: #fff; background: var(--red); border: 0; box-shadow: 0 4px 0 var(--red-dark); }
-.dialog-ok:disabled{ cursor: not-allowed; opacity: 0.45; }
-.dialog-buttons.single .dialog-cancel{ display: none; }
+.numpad button:active{ transform: translateY(2px); box-shadow: 0 2px 0 var(--line); }
+.numpad .key-alt{ font-size: 1.1rem; color: var(--muted); }
+.pay-actions{ display: grid; grid-template-columns: 1fr 1.6fr; gap: 0.6rem; margin-top: 1rem; }
+
+/* Paper receipt */
+#receipt{
+	margin: 0 auto;
+	padding: 1.4rem 1.2rem 1.8rem;
+	font-family: "Courier New", ui-monospace, monospace;
+	font-size: 0.92rem;
+	background: #fff;
+	-webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 16px 100%;
+	        mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 16px 100%;
+	animation: print 0.6s ease-out;
+}
+@keyframes print{ from{ transform: translateY(-1.5rem); opacity: 0; } }
+#receipt .r-center{ text-align: center; }
+#receipt .r-brand{ font-family: "Baloo 2", sans-serif; font-size: 1.9rem; font-weight: 800; color: var(--red); line-height: 1.1; }
+#receipt .r-order{ display: inline-block; margin: 0.5rem 0 0.2rem; padding: 0.1rem 0.6rem; font-weight: 700; border: 2px dashed var(--ink); }
+#receipt hr{ margin: 0.6rem 0; border: 0; border-top: 2px dashed var(--ink); }
+#receipt .r-row{ display: flex; justify-content: space-between; gap: 0.75rem; margin: 0.2rem 0; }
+#receipt .r-row span:last-child{ flex: none; }
+#receipt .r-big{ font-weight: 700; font-size: 1.05rem; }
+.receipt-actions{ display: grid; grid-template-columns: 1fr 1.6fr; gap: 0.6rem; margin-top: 1.1rem; }
+#receipt-sheet{ background: var(--cream); }
+
+/* Toast */
+#toast{
+	position: fixed;
+	left: 50%;
+	top: calc(var(--header) + 1rem);
+	z-index: 30;
+	max-width: calc(100% - 2rem);
+	text-align: center;
+	padding: 0.6rem 1.1rem;
+	font-weight: 800;
+	color: #fff;
+	background: var(--green);
+	border-radius: 999px;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(-50%, -0.75rem);
+	transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+}
+#toast.show{ opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+/* Tablets: the order opens from a bottom bar */
+@media (max-width: 1100px){
+	.container{ grid-template-columns: 12rem minmax(0, 1fr); }
+	body{ padding-bottom: 5.5rem; }
+	#cart-bar{ display: block; }
+	#cart{
+		position: fixed;
+		top: auto;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		z-index: 45;
+		max-height: 82vh;
+		margin: 0;
+		border-radius: 1.5rem 1.5rem 0 0;
+		box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+		transform: translateY(105%);
+		transition: transform 0.25s ease;
+	}
+	#cart.open{ transform: none; }
+	.cart-close{ display: grid; place-items: center; }
+	#cart-shade{ position: fixed; inset: 0; z-index: 44; background: rgba(43, 24, 16, 0.55); }
+}
 
 /* Phones */
 @media (max-width: 760px){
@@ -387,7 +538,7 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	.badge-logo svg{ width: 2.2rem; height: 2.2rem; }
 	#title-section h1{ font-size: 1.45rem; }
 	#title-section h1 small, #title-section p{ display: none; }
-	.container{ grid-template-columns: 1fr; }
+	.container{ grid-template-columns: minmax(0, 1fr); padding: 0; }
 	#menu{
 		z-index: 10;
 		grid-auto-flow: column;
@@ -400,21 +551,25 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	#menu h2{ display: none; }
 	.tab-icon{ width: 2.2rem; height: 2.2rem; }
 	.tab-icon svg{ width: 1.8rem; height: 1.8rem; }
-	#gallery{ padding: 1rem; }
+	#gallery{ padding: 1rem 1rem 2rem; }
 	#gallery > h2{ font-size: 1.7rem; }
 	.category{ scroll-margin-top: calc(var(--header) + 5rem); }
 	#food-grid{ grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); gap: 0.8rem; }
-	#receipt{ font-size: 0.85rem; }
 	.food-art{ width: 6rem; height: 6rem; }
 	.food-art svg{ width: 5.2rem; height: 5.2rem; }
 	.combo .food-art{ width: 8rem; }
 	.combo .food-art svg{ width: 7.6rem; }
-	#order-bar p{ display: none; }
-	.order-button{ width: 100%; }
+	.quick-cash{ grid-template-columns: repeat(3, 1fr); }
 }
 @media (prefers-reduced-motion: reduce){
 	html{ scroll-behavior: auto; }
 	*, *::before, *::after{ animation: none !important; transition: none !important; }
+}
+@media print{
+	body > *:not(#receipt-backdrop){ display: none !important; }
+	#receipt-backdrop{ position: static; background: none; padding: 0; }
+	#receipt-sheet{ border: 0; box-shadow: none; animation: none; }
+	.receipt-actions, #receipt-sheet .sheet-close{ display: none; }
 }
 </style>
 </head>
@@ -570,7 +725,8 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 			<button type="button" onclick="chooseEat('TAKE OUT')"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#bag"/></svg>Take out</button>
 		</div>
 		<p class="credit">A POS simulator by Jesler Guzman &amp; Sean Wesley Santos · ICT-201, 2022<br>
-		A student parody, not connected to any restaurant.<br><a href="/">← Back to the portfolio</a></p>
+		A student parody, not connected to any restaurant.<br>
+		<a href="original.html">Try the 2022 version</a> · <a href="/">Back to the portfolio</a></p>
 	</div>
 </div>
 
@@ -583,229 +739,126 @@ button{ font: inherit; color: inherit; cursor: pointer; }
 	<button type="button" class="eat-pill" id="eat-pill" onclick="showWelcome()" aria-label="Change dine in or take out">DINE IN</button>
 </div>
 
-<div id="container" class="container">
+<div class="container">
 	<nav id="menu" aria-label="Menu categories">
 		<h2>Menu</h2>
 		<button type="button" class="tab active" onclick="goTo(0)"><span class="tab-icon"><svg viewBox="0 0 100 100"><use href="#mango"/></svg></span>Desserts</button>
 		<button type="button" class="tab" onclick="goTo(3)"><span class="tab-icon"><svg viewBox="0 0 100 100"><use href="#chicken"/></svg></span>Meals</button>
 		<button type="button" class="tab" onclick="goTo(6)"><span class="tab-icon"><svg viewBox="0 0 100 100"><use href="#frappe"/></svg></span>Drinks</button>
 		<button type="button" class="tab" onclick="goTo(9)"><span class="tab-icon"><svg viewBox="0 0 100 100"><use href="#burger"/></svg></span>Combo meals</button>
-	<script type="text/javascript">
-    // Categories
-    var arrayCategories = ["Signature Meals", "Beverages", "Desserts"]
-
-    // Foods and Prices
-    var arrayFoods = [
-      "Peach Mango McFlurry", "Hot Fudge Mallow Cake", "Jolly Choco Shake Fries",
-      "McChickenjoy", "Filet-O-Yum Burger", "Jolly McRice Chao",
-      "Jolly McCafe Frappe", "Caramel McFloatbee", "Pineapple Jolly Iced Tea",
-      "McChickenjoy + Jolly McCafe Frappe", "Filet-O-Yum Burger + Caramel McFloatbee", "Jolly McRice Chao + Pineapple Jolly Iced Tea"
-     ]
-    var arrayPrices = [
-      19, 32, 26,
-      49, 49, 59,
-      36, 47, 22,
-      85, 96, 86
-     ]
-    // Receipt List
-    var receiptList = []
-
-    // Add Order to Receipt Constructor
-    function addOrder(orderQuantity, orderName, orderPrice) {
-      this.orderQuantity = orderQuantity;
-      this.orderName = orderName;
-      this.orderPrice = orderPrice;
-    }
-
-    // Display Menu
-    var displayMenu = "";
-    for (var i = 0; i < arrayFoods.length; i++) {
-      if (i == 0) displayMenu += "DESSERTS:\n"
-      if (i == 3) displayMenu += "\nMEALS:\n"
-      if (i == 6) displayMenu += "\nDRINKS:\n"
-      if (i == 9) displayMenu += "\nCOMBO:\n"
-      displayMenu += (i + 1) + ": " + arrayFoods[i] + " - P" + arrayPrices[i] + "\n"
-    }
-
-    // First Execution (starts from the Order now button, or from a food card with that food already picked)
-    async function startOrder(firstPick) {
-    receiptList = []
-    await say("Hello, ma'am and sir, and welcome to McDollibee! May I have your order?");
-    while (true) {
-      var chooseOrder
-      if (firstPick !== undefined) { chooseOrder = firstPick; firstPick = undefined }
-      else {
-        var menuAnswer = await ask(displayMenu, 2)
-        if (menuAnswer === null) { if (receiptList.length) await checkOut(); break; }
-        chooseOrder = Number(menuAnswer) - 1
-        if (!arrayFoods[chooseOrder]) { await say("Please type a number from 1 to " + arrayFoods.length + "."); continue; }
-      }
-
-      // Display selected category
-      var getQuantity = Number(await ask("Selected: " + arrayFoods[chooseOrder] + " - P" + arrayPrices[chooseOrder] +
-        "\n\nHow many?", 2))
-      if (!(getQuantity > 0) || getQuantity % 1 !== 0) { await say("Please type how many you want, like 1 or 2."); continue; }
-
-      var quantedOrder = arrayPrices[chooseOrder] * getQuantity;
-
-      //Confirm Order
-      var orderName = arrayFoods[chooseOrder]
-      receiptList.push(new addOrder(getQuantity, orderName, quantedOrder))
-      console.table(receiptList)
-      await say(getQuantity + "x " + orderName + " worth P" + quantedOrder +
-        "\n\nOrder Confirmed!")
-
-      // Order Again or Checkout?
-      var orderAgain = Number(await ask("Do you want to order more?" +
-        "\n1 - Yes\n2 - No", 1))
-      if (orderAgain != 1) { await checkOut(); break; }
-    }
-    }
-    // Finalize Receipt
-    function finalizeReceipt(totalAmountDueInReceipt, payReceipt, changeReceipt) {
-      var stringOrder = "";
-      for (i = 0; i < receiptList.length; i++) stringOrder += "<p>" + receiptList[i].orderQuantity + "x " + receiptList[i].orderName + " - P" + receiptList[i].orderPrice + "</p>";
-      var oldReceipt = document.getElementById("receipt")
-      if (oldReceipt) oldReceipt.remove()
-      document.body.insertAdjacentHTML("beforeend",
-        `<div id="receipt">
-          <h2>McDollibee</h2>
-          <h3>Guzman & Santos POS</h3>
-          <p class="order-type">${orderType}</p>
-          <br>======================================
-          <h3>QTY\t\t-\t\t\tNAME\t\t\t-\t\tVALUE</h3>
-          ${stringOrder}
-          <br>======================================
-          <h3>TOTAL: P${totalAmountDueInReceipt}</h3>
-          <h3>CASH: P${payReceipt}</h3>
-          <h3>CHANGE: P${changeReceipt}</h3>
-        </div>`)
-      document.getElementById("receipt").scrollIntoView({ behavior: "smooth", block: "center" })
-    }
-    // Checkout
-    async function checkOut() {
-      var totalItemsInReceipt = 0;
-      for (i = 0; i < receiptList.length; i++) {
-        totalItemsInReceipt += receiptList[i].orderQuantity
-      }
-      var totalAmountDueInReceipt = 0;
-      for (i = 0; i < receiptList.length; i++) {
-        totalAmountDueInReceipt += receiptList[i].orderPrice
-      }
-
-      var payAnswer = await ask("Total Items: " + totalItemsInReceipt +
-        "\nTotal Amount Due: P" + totalAmountDueInReceipt +
-        "\n\nPlease pay at least enough amount to pay:", 5)
-      if (payAnswer === null) { await say("Order cancelled. Tap Order now to start again."); return; }
-      var payReceipt = Number(payAnswer)
-
-      var changeReceipt = payReceipt - totalAmountDueInReceipt
-      if (payReceipt >= totalAmountDueInReceipt) finalizeReceipt(totalAmountDueInReceipt, payReceipt, changeReceipt);
-      else {
-        await say("Not enough amount to pay the receipt.")
-        payReceipt = 0;
-        await checkOut();
-      }
-    }
-	</script>
 	</nav>
+
 	<main id="gallery">
 		<h2>What's your order?</h2>
-		<p>Tap a food to order it.</p>
+		<p>Tap a food to add it to your order.</p>
 		<div id="food-grid"></div>
 	</main>
+
+	<aside id="cart" aria-labelledby="cart-title">
+		<div class="cart-head">
+			<h2 id="cart-title">My Order</h2>
+			<span class="cart-type" id="cart-type">DINE IN</span>
+			<button type="button" class="cart-close" onclick="closeCart()" aria-label="Close my order">✕</button>
+		</div>
+		<ul id="cart-lines"></ul>
+		<div class="cart-foot">
+			<div class="cart-total"><span>Total</span><strong id="cart-total">₱0</strong></div>
+			<button type="button" class="big-button green" id="checkout" onclick="openPay()">Checkout</button>
+			<button type="button" class="cart-clear" id="cart-clear" onclick="clearCart()">Clear order</button>
+		</div>
+	</aside>
 </div>
 
-<div id="dialog" class="hidden" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-text">
-	<form class="dialog-card" id="dialog-form" autocomplete="off">
-		<p class="dialog-title wordmark" id="dialog-title">McDollibee</p>
-		<p class="dialog-text" id="dialog-text"></p>
-		<div class="dialog-field" id="dialog-field">
-			<input id="dialog-input" type="text" inputmode="numeric" pattern="[0-9]*" aria-describedby="dialog-hint">
-			<p class="dialog-hint" id="dialog-hint"></p>
-		</div>
-		<div class="dialog-buttons">
-			<button type="button" class="dialog-cancel" id="dialog-cancel">Cancel</button>
-			<button type="submit" class="dialog-ok" id="dialog-ok">OK</button>
-		</div>
-	</form>
+<div id="cart-bar">
+	<button type="button" class="big-button" onclick="openCart()">
+		<span><span class="bar-count" id="bar-count">0</span>View my order</span>
+		<span id="bar-total">₱0</span>
+	</button>
 </div>
 
-<div id="order-bar">
-	<p>Want to see the full menu first?</p>
-	<button type="button" class="order-button" onclick="dialogDone || startOrder()">Order now!</button>
+<!-- Food details -->
+<div class="backdrop" id="item-backdrop" hidden onclick="if (event.target == this) closeItem()">
+	<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="item-name">
+		<button type="button" class="sheet-close" onclick="closeItem()" aria-label="Close">✕</button>
+		<div class="item-art" id="item-art"></div>
+		<h2 id="item-name"></h2>
+		<p class="item-price" id="item-price"></p>
+		<div class="item-qty">
+			<div class="stepper">
+				<button type="button" id="item-minus" onclick="stepItem(-1)" aria-label="One less">−</button>
+				<output id="item-qty" aria-live="polite">1</output>
+				<button type="button" id="item-plus" onclick="stepItem(1)" aria-label="One more">+</button>
+			</div>
+		</div>
+		<button type="button" class="big-button" id="item-add" onclick="addItem()"></button>
+	</div>
 </div>
+
+<!-- Payment -->
+<div class="backdrop" id="pay-backdrop" hidden onclick="if (event.target == this) closePay()">
+	<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pay-title">
+		<button type="button" class="sheet-close" onclick="closePay()" aria-label="Back to my order">✕</button>
+		<h2 id="pay-title">Payment</h2>
+		<div class="pay-due"><span id="pay-items">Total due</span><strong id="pay-total">₱0</strong></div>
+		<div class="cash-screen" aria-live="polite"><small>CASH</small><span id="cash-show">₱0</span></div>
+		<p class="pay-status" id="pay-status"></p>
+		<div class="quick-cash" id="quick-cash"></div>
+		<div class="numpad" id="numpad">
+			<button type="button" onclick="press('1')">1</button>
+			<button type="button" onclick="press('2')">2</button>
+			<button type="button" onclick="press('3')">3</button>
+			<button type="button" onclick="press('4')">4</button>
+			<button type="button" onclick="press('5')">5</button>
+			<button type="button" onclick="press('6')">6</button>
+			<button type="button" onclick="press('7')">7</button>
+			<button type="button" onclick="press('8')">8</button>
+			<button type="button" onclick="press('9')">9</button>
+			<button type="button" class="key-alt" onclick="press('C')" aria-label="Clear">Clear</button>
+			<button type="button" onclick="press('0')">0</button>
+			<button type="button" class="key-alt" onclick="press('back')" aria-label="Delete last digit">⌫</button>
+		</div>
+		<div class="pay-actions">
+			<button type="button" class="plain-button" onclick="closePay()">Back</button>
+			<button type="button" class="big-button green" id="pay-button" onclick="pay()">Pay</button>
+		</div>
+	</div>
+</div>
+
+<!-- Receipt -->
+<div class="backdrop" id="receipt-backdrop" hidden>
+	<div class="sheet" id="receipt-sheet" role="dialog" aria-modal="true" aria-label="Receipt">
+		<div id="receipt"></div>
+		<div class="receipt-actions">
+			<button type="button" class="plain-button" onclick="window.print()">Print</button>
+			<button type="button" class="big-button" onclick="newOrder()">New order</button>
+		</div>
+	</div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
-// 2026 kiosk additions. The ordering itself is the original code above (startOrder, checkOut, finalizeReceipt).
-var orderType = "DINE IN"
-
-// Kiosk dialogs. ask() replaces prompt(): numbers only, up to maxLength digits, Cancel gives null.
-// say() replaces alert(). Both return a Promise, so the ordering code waits with await.
-var dialog = document.getElementById("dialog")
-var dialogForm = document.getElementById("dialog-form")
-var dialogText = document.getElementById("dialog-text")
-var dialogField = document.getElementById("dialog-field")
-var dialogInput = document.getElementById("dialog-input")
-var dialogHint = document.getElementById("dialog-hint")
-var dialogOk = document.getElementById("dialog-ok")
-var dialogCancel = document.getElementById("dialog-cancel")
-var dialogButtons = dialogOk.parentElement
-var dialogDone = null
-
-function openDialog(message, maxLength) {
-	return new Promise(function (resolve) {
-		var asking = maxLength > 0
-		dialogText.textContent = message
-		dialogField.classList.toggle("hidden", !asking)
-		dialogButtons.classList.toggle("single", !asking)
-		dialogInput.value = ""
-		dialogInput.maxLength = asking ? maxLength : 524288
-		dialogOk.disabled = asking
-		updateHint()
-		dialogDone = function (answer) {
-			dialog.classList.add("hidden")
-			dialogDone = null
-			resolve(answer)
-		}
-		dialog.classList.remove("hidden")
-		;(asking ? dialogInput : dialogOk).focus()
-	})
-}
-function ask(message, maxLength) { return openDialog(message, maxLength) }
-function say(message) { return openDialog(message, 0) }
-
-function updateHint() {
-	var max = dialogInput.maxLength
-	dialogHint.textContent = "Numbers only · " + dialogInput.value.length + "/" + max + (max == 1 ? " digit" : " digits")
-}
-dialogInput.addEventListener("input", function () {
-	var digits = dialogInput.value.replace(/[^0-9]/g, "").slice(0, dialogInput.maxLength)
-	if (digits !== dialogInput.value) dialogInput.value = digits
-	dialogOk.disabled = digits.length == 0
-	updateHint()
-})
-dialogForm.addEventListener("submit", function (e) {
-	e.preventDefault()
-	if (!dialogDone) return
-	if (dialogField.classList.contains("hidden")) dialogDone(undefined)
-	else if (dialogInput.value) dialogDone(dialogInput.value)
-})
-dialogCancel.addEventListener("click", function () { if (dialogDone) dialogDone(null) })
-document.addEventListener("keydown", function (e) {
-	if (e.key == "Escape" && dialogDone) dialogDone(dialogField.classList.contains("hidden") ? undefined : null)
-})
-
-function chooseEat(type) {
-	orderType = type
-	document.getElementById("eat-pill").textContent = type
-	document.getElementById("welcome").classList.add("hidden")
-}
-function showWelcome() {
-	document.getElementById("welcome").classList.remove("hidden")
+// ---- Menu data and receipt constructor from the 2022 code (names updated in 2026) ----
+var arrayFoods = [
+	"Peach Mango McFlurry", "Hot Fudge Mallow Cake", "Jolly Choco Shake Fries",
+	"McChickenjoy", "Filet-O-Yum Burger", "Jolly McRice Chao",
+	"Jolly McCafe Frappe", "Caramel McFloatbee", "Pineapple Jolly Iced Tea",
+	"McChickenjoy + Jolly McCafe Frappe", "Filet-O-Yum Burger + Caramel McFloatbee", "Jolly McRice Chao + Pineapple Jolly Iced Tea"
+]
+var arrayPrices = [
+	19, 32, 26,
+	49, 49, 59,
+	36, 47, 22,
+	85, 96, 86
+]
+// Add Order to Receipt Constructor
+function addOrder(orderQuantity, orderName, orderPrice) {
+	this.orderQuantity = orderQuantity;
+	this.orderName = orderName;
+	this.orderPrice = orderPrice;
 }
 
-// Food cards: one per item in arrayFoods. Tapping a card starts an order with that food already picked.
+// ---- 2026 POS ----
 var foodDrawings = [
 	["mango"], ["cake"], ["fries"],
 	["chicken"], ["burger"], ["chao"],
@@ -814,45 +867,280 @@ var foodDrawings = [
 ]
 var categoryTitles = { 0: "Desserts", 3: "Meals", 6: "Drinks", 9: "Combo meals" }
 var foodTags = { 1: "NEW!", 3: "BEST SELLER", 9: "SULIT!", 10: "SULIT!", 11: "SULIT!" }
-var cards = ""
-for (var f = 0; f < arrayFoods.length; f++) {
-	if (categoryTitles[f]) cards += '<h3 class="category" id="cat-' + f + '">' + categoryTitles[f] + '</h3>'
-	var pics = foodDrawings[f]
-	var art = pics.length == 1
-		? '<svg viewBox="0 0 100 100"><use href="#' + pics[0] + '"/></svg>'
-		: '<svg viewBox="0 0 160 100"><use href="#' + pics[0] + '" width="100" height="100"/><use href="#' + pics[1] + '" x="60" width="100" height="100"/></svg>'
-	cards += '<button type="button" class="food-card' + (pics.length > 1 ? ' combo' : '') + '" onclick="dialogDone || startOrder(' + f + ')"' +
-		' aria-label="Order ' + arrayFoods[f] + ', ' + arrayPrices[f] + ' pesos">' +
-		(foodTags[f] ? '<span class="tag">' + foodTags[f] + '</span>' : '') +
-		'<span class="food-art">' + art + '</span>' +
-		'<span class="food-name">' + arrayFoods[f] + '</span>' +
-		'<span class="food-price">₱' + arrayPrices[f] + '</span>' +
-		'<span class="add" aria-hidden="true">+</span></button>'
+var MAX_QTY = 99
+var MAX_CASH_DIGITS = 5
+
+var orderType = "DINE IN"
+var cart = []          // { food: index in arrayFoods, qty }
+var itemFood = 0       // food open in the details pop-up
+var itemQty = 1
+var cash = ""          // digits typed on the keypad
+var lastFocus = null
+
+function peso(n) { return "₱" + n.toLocaleString("en-PH") }
+function drawing(food) {
+	var pics = foodDrawings[food]
+	return pics.length == 1
+		? '<svg viewBox="0 0 100 100" aria-hidden="true"><use href="#' + pics[0] + '"/></svg>'
+		: '<svg viewBox="0 0 160 100" aria-hidden="true"><use href="#' + pics[0] + '" width="100" height="100"/><use href="#' + pics[1] + '" x="60" width="100" height="100"/></svg>'
 }
-document.getElementById("food-grid").innerHTML = cards
+function $(id) { return document.getElementById(id) }
+function cartTotal() { return cart.reduce(function (sum, line) { return sum + arrayPrices[line.food] * line.qty }, 0) }
+function cartCount() { return cart.reduce(function (sum, line) { return sum + line.qty }, 0) }
+
+// Welcome screen
+function chooseEat(type) {
+	orderType = type
+	$("eat-pill").textContent = type
+	$("cart-type").textContent = type
+	$("welcome").classList.add("hidden")
+}
+function showWelcome() { $("welcome").classList.remove("hidden") }
+
+// Menu cards
+function renderCards() {
+	var html = ""
+	for (var f = 0; f < arrayFoods.length; f++) {
+		if (categoryTitles[f]) html += '<h3 class="category" id="cat-' + f + '">' + categoryTitles[f] + '</h3>'
+		var line = cart.find(function (l) { return l.food == f })
+		html += '<button type="button" class="food-card' + (foodDrawings[f].length > 1 ? ' combo' : '') + '" onclick="openItem(' + f + ')"' +
+			' aria-label="' + arrayFoods[f] + ', ' + arrayPrices[f] + ' pesos' + (line ? ', ' + line.qty + ' in your order' : '') + '">' +
+			(foodTags[f] ? '<span class="tag">' + foodTags[f] + '</span>' : '') +
+			(line ? '<span class="in-cart">' + line.qty + '</span>' : '') +
+			'<span class="food-art">' + drawing(f) + '</span>' +
+			'<span class="food-name">' + arrayFoods[f] + '</span>' +
+			'<span class="food-price">' + peso(arrayPrices[f]) + '</span>' +
+			'<span class="add" aria-hidden="true">+</span></button>'
+	}
+	$("food-grid").innerHTML = html
+	watchCategories()
+}
+
+// Pop-up helpers
+function openSheet(id, focusId) {
+	$("toast").classList.remove("show")
+	lastFocus = document.activeElement
+	$(id).hidden = false
+	setTimeout(function () { var el = $(focusId); if (el) el.focus() }, 30)
+}
+function closeSheet(id) {
+	$(id).hidden = true
+	if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus()
+}
+
+// Food details
+function openItem(food) {
+	itemFood = food
+	itemQty = 1
+	$("item-art").className = "item-art" + (foodDrawings[food].length > 1 ? " combo" : "")
+	$("item-art").innerHTML = drawing(food)
+	$("item-name").textContent = arrayFoods[food]
+	$("item-price").textContent = peso(arrayPrices[food]) + " each"
+	showItemQty()
+	openSheet("item-backdrop", "item-add")
+}
+function stepItem(d) {
+	itemQty = Math.min(MAX_QTY, Math.max(1, itemQty + d))
+	showItemQty()
+}
+function showItemQty() {
+	var already = (cart.find(function (l) { return l.food == itemFood }) || { qty: 0 }).qty
+	var room = MAX_QTY - already
+	if (itemQty > room) itemQty = Math.max(1, room)
+	$("item-qty").textContent = itemQty
+	$("item-minus").disabled = itemQty <= 1
+	$("item-plus").disabled = itemQty >= room
+	$("item-add").disabled = room <= 0
+	$("item-add").textContent = room <= 0 ? "Max " + MAX_QTY + " in one order" : "Add to order · " + peso(arrayPrices[itemFood] * itemQty)
+}
+function closeItem() { closeSheet("item-backdrop") }
+function addItem() {
+	var line = cart.find(function (l) { return l.food == itemFood })
+	if (line) line.qty = Math.min(MAX_QTY, line.qty + itemQty)
+	else cart.push({ food: itemFood, qty: itemQty })
+	closeItem()
+	renderCart()
+	renderCards()
+	toast(itemQty + "× " + arrayFoods[itemFood] + " added")
+	$("cart").classList.remove("bump"); void $("cart").offsetWidth; $("cart").classList.add("bump")
+}
+
+// My order
+function renderCart() {
+	var lines = $("cart-lines")
+	if (!cart.length) {
+		lines.innerHTML = '<li class="cart-empty"><svg viewBox="0 0 100 100"><use href="#bag"/></svg>Your order is empty.<br>Tap a food to add it.</li>'
+	} else {
+		lines.innerHTML = cart.map(function (line, i) {
+			return '<li class="cart-line">' + drawing(line.food) +
+				'<span class="line-name">' + arrayFoods[line.food] + '</span>' +
+				'<span class="line-total">' + peso(arrayPrices[line.food] * line.qty) + '</span>' +
+				'<span class="stepper">' +
+				'<button type="button" onclick="stepLine(' + i + ', -1)" aria-label="One less ' + arrayFoods[line.food] + '">−</button>' +
+				'<output>' + line.qty + '</output>' +
+				'<button type="button" onclick="stepLine(' + i + ', 1)" aria-label="One more ' + arrayFoods[line.food] + '"' + (line.qty >= MAX_QTY ? " disabled" : "") + '>+</button>' +
+				'</span>' +
+				'<button type="button" class="line-remove" onclick="removeLine(' + i + ')">Remove</button></li>'
+		}).join("")
+	}
+	var total = cartTotal(), count = cartCount()
+	$("cart-total").textContent = peso(total)
+	$("bar-total").textContent = peso(total)
+	$("bar-count").textContent = count
+	$("checkout").disabled = !cart.length
+	$("cart-clear").hidden = !cart.length
+}
+function stepLine(i, d) {
+	cart[i].qty += d
+	if (cart[i].qty <= 0) cart.splice(i, 1)
+	else cart[i].qty = Math.min(MAX_QTY, cart[i].qty)
+	renderCart()
+	renderCards()
+}
+function removeLine(i) { cart.splice(i, 1); renderCart(); renderCards() }
+function clearCart() { cart = []; renderCart(); renderCards() }
+function openCart() {
+	$("toast").classList.remove("show")
+	lastFocus = document.activeElement
+	$("cart").classList.add("open")
+	var shade = document.createElement("div")
+	shade.id = "cart-shade"
+	shade.onclick = closeCart
+	document.body.appendChild(shade)
+	$("cart-title").setAttribute("tabindex", "-1")
+	$("cart-title").focus()
+}
+function closeCart() {
+	$("cart").classList.remove("open")
+	var shade = $("cart-shade")
+	if (shade) shade.remove()
+	if (lastFocus && document.body.contains(lastFocus)) lastFocus.focus()
+}
+
+// Payment
+function openPay() {
+	if (!cart.length) return
+	closeCart()
+	cash = ""
+	var total = cartTotal()
+	$("pay-items").textContent = "Total due · " + cartCount() + (cartCount() == 1 ? " item" : " items")
+	$("pay-total").textContent = peso(total)
+	var quick = [100, 200, 500, 1000].filter(function (n) { return n >= total })
+	$("quick-cash").innerHTML = '<button type="button" onclick="setCash(' + total + ')">Exact</button>' +
+		quick.map(function (n) { return '<button type="button" onclick="setCash(' + n + ')">' + peso(n) + '</button>' }).join("")
+	showCash()
+	openSheet("pay-backdrop", "pay-button")
+}
+function closePay() { closeSheet("pay-backdrop") }
+function press(key) {
+	if (key == "C") cash = ""
+	else if (key == "back") cash = cash.slice(0, -1)
+	else if (/^[0-9]$/.test(key) && cash.length < MAX_CASH_DIGITS && !(cash == "" && key == "0")) cash += key
+	showCash()
+}
+function setCash(n) { cash = String(n).slice(0, MAX_CASH_DIGITS); showCash() }
+function showCash() {
+	var paid = Number(cash), total = cartTotal(), status = $("pay-status")
+	$("cash-show").textContent = peso(paid)
+	if (!cash) { status.textContent = "Type the cash amount (up to " + MAX_CASH_DIGITS + " digits)"; status.className = "pay-status" }
+	else if (paid < total) { status.textContent = "Not enough yet: " + peso(total - paid) + " more"; status.className = "pay-status short" }
+	else { status.textContent = "Change: " + peso(paid - total); status.className = "pay-status ok" }
+	$("pay-button").disabled = !cash || paid < total
+}
+function pay() {
+	var payReceipt = Number(cash), totalAmountDueInReceipt = cartTotal()
+	if (payReceipt < totalAmountDueInReceipt) return
+	// Build the receipt list the 2022 way, with addOrder
+	var receiptList = cart.map(function (line) {
+		return new addOrder(line.qty, arrayFoods[line.food], arrayPrices[line.food] * line.qty)
+	})
+	finalizeReceipt(receiptList, totalAmountDueInReceipt, payReceipt, payReceipt - totalAmountDueInReceipt)
+	closeSheet("pay-backdrop")
+	openSheet("receipt-backdrop", "receipt-sheet")
+}
+
+// Receipt
+function nextOrderNumber() {
+	var n = 101
+	try { n = Number(localStorage.getItem("mcdollibee-order") || 100) + 1; localStorage.setItem("mcdollibee-order", n) } catch (e) {}
+	return n
+}
+function finalizeReceipt(receiptList, totalAmountDueInReceipt, payReceipt, changeReceipt) {
+	var stringOrder = ""
+	for (var i = 0; i < receiptList.length; i++) {
+		stringOrder += '<div class="r-row"><span>' + receiptList[i].orderQuantity + "x " + receiptList[i].orderName + '</span><span>P' + receiptList[i].orderPrice + '</span></div>'
+	}
+	var now = new Date()
+	$("receipt").innerHTML =
+		'<div class="r-center"><div class="r-brand">McDollibee</div>' +
+		'<div>Guzman &amp; Santos POS</div>' +
+		'<div class="r-order">ORDER #' + nextOrderNumber() + ' · ' + orderType + '</div>' +
+		'<div>' + now.toLocaleDateString("en-PH") + ' ' + now.toLocaleTimeString("en-PH", { hour: "numeric", minute: "2-digit" }) + '</div></div>' +
+		'<hr>' + stringOrder + '<hr>' +
+		'<div class="r-row r-big"><span>TOTAL</span><span>P' + totalAmountDueInReceipt + '</span></div>' +
+		'<div class="r-row"><span>CASH</span><span>P' + payReceipt + '</span></div>' +
+		'<div class="r-row r-big"><span>CHANGE</span><span>P' + changeReceipt + '</span></div>' +
+		'<hr><div class="r-center">Salamat po! Come again.</div>'
+}
+function newOrder() {
+	closeSheet("receipt-backdrop")
+	cart = []
+	renderCart()
+	renderCards()
+	window.scrollTo(0, 0)
+	showWelcome()
+}
+
+// Toast
+var toastTimer
+function toast(text) {
+	$("toast").textContent = text
+	$("toast").classList.add("show")
+	clearTimeout(toastTimer)
+	toastTimer = setTimeout(function () { $("toast").classList.remove("show") }, 1800)
+}
+
+// Keyboard: digits and Backspace on the payment keypad, Enter to pay, Escape closes pop-ups
+document.addEventListener("keydown", function (e) {
+	if (!$("pay-backdrop").hidden) {
+		if (/^[0-9]$/.test(e.key)) { press(e.key); e.preventDefault() }
+		else if (e.key == "Backspace") { press("back"); e.preventDefault() }
+		else if (e.key == "Enter" && !$("pay-button").disabled && document.activeElement.closest(".numpad, .quick-cash, #pay-button") == null) { pay(); e.preventDefault() }
+	}
+	if (e.key == "Escape") {
+		if (!$("item-backdrop").hidden) closeItem()
+		else if (!$("pay-backdrop").hidden) closePay()
+		else if ($("cart").classList.contains("open")) closeCart()
+	}
+})
 
 // Category tabs: jump to a section, and highlight the section on screen
 var tabs = document.querySelectorAll(".tab")
 var tabStarts = [0, 3, 6, 9]
 var tabLockedUntil = 0
+var seen = null
 function goTo(start) {
-	// Keep the tapped tab lit while the page scrolls, even if the last section can't reach the top
 	markTab(tabStarts.indexOf(start))
 	tabLockedUntil = Date.now() + 1000
-	document.getElementById("cat-" + start).scrollIntoView({ behavior: "smooth", block: "start" })
+	$("cat-" + start).scrollIntoView({ behavior: "smooth", block: "start" })
 }
 function markTab(index) {
 	tabs.forEach(function (t, i) { t.classList.toggle("active", i == index) })
 }
-if ("IntersectionObserver" in window) {
-	var seen = new IntersectionObserver(function (entries) {
+function watchCategories() {
+	if (!("IntersectionObserver" in window)) return
+	if (seen) seen.disconnect()
+	seen = new IntersectionObserver(function (entries) {
 		if (Date.now() < tabLockedUntil) return
 		entries.forEach(function (e) {
 			if (e.isIntersecting) markTab(tabStarts.indexOf(Number(e.target.id.slice(4))))
 		})
 	}, { rootMargin: "-30% 0px -60% 0px" })
-	tabStarts.forEach(function (s) { seen.observe(document.getElementById("cat-" + s)) })
+	tabStarts.forEach(function (s) { seen.observe($("cat-" + s)) })
 }
+
+renderCards()
+renderCart()
 </script>
 </body>
 </html>
