@@ -61,6 +61,17 @@ const topics = [
     }),
   },
   {
+    id: 'pos',
+    keywords: ['pos', 'mcdollibee', 'mcdo', 'jollibee', 'cashier', 'point of sale', 'first program', 'first project', 'santos', 'unang'],
+    answer: () => {
+      const pos = projects.find((p) => p.name.includes('POS'))
+      return {
+        text: `${pos.name} is one of ${profile.firstName}'s first programs, made in 2022 with his classmate ${pos.team?.[1] || ''}. ${pos.description}\n\nBuilt with ${pos.stack.join(', ')}.`,
+        links: [{ label: 'See projects', href: '#projects' }],
+      }
+    },
+  },
+  {
     id: 'projects',
     keywords: ['project', 'projects', 'built', 'build', 'made', 'work', 'portfolio', 'gawa', 'ginawa', 'system'],
     answer: () => ({

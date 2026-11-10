@@ -96,6 +96,24 @@ export const projects = [
     stack: ['React', 'Vite', 'Tailwind CSS', 'Vercel'],
     links: { live: 'https://jesler-portfolio.vercel.app', code: 'https://github.com/DAKDAK21/jesler-portfolio' },
   },
+  {
+    name: 'McDollibee POS Simulator',
+    featured: false,
+    tagline: 'A fast-food cashier that takes orders and prints a receipt',
+    description:
+      'A point-of-sale simulator for a made-up fast-food restaurant, built in Senior High School (ICT-201). It shows a menu of desserts, meals, drinks and combo meals, takes each order and quantity, checks that the cash is enough, then prints a receipt with the total and change.',
+    highlights: [
+      'Menu, prices and orders stored in arrays and objects',
+      'Running receipt that adds up the total of every order',
+      'Payment check that asks again when the cash is not enough, then computes the change',
+      'Receipt built and added to the page with JavaScript',
+    ],
+    role: 'Co-developer (pair project)',
+    team: ['Jesler Guzman', 'Santos'],
+    note: 'School project · 2022', // shown instead of a link
+    stack: ['HTML', 'CSS', 'JavaScript'],
+    links: { live: '', code: '' },
+  },
 ]
 
 // Certificates. Optional `image` (shown in a pop-up viewer) and `pdf` (download), both in public/certs/.
