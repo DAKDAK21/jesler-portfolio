@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react'
 
-// A short opening animation. It plays once per browser tab, can be skipped
-// with a click or any key, and is skipped entirely for visitors who prefer
-// reduced motion.
-const KEY = 'intro-seen'
-
+// A short opening animation. It plays every time the page is opened or
+// refreshed, can be skipped with a click or any key, and is skipped entirely
+// for visitors who prefer reduced motion.
 function shouldPlay() {
-  try {
-    if (sessionStorage.getItem(KEY)) return false
-  } catch {}
   return !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 }
 
@@ -17,9 +12,6 @@ export default function Intro() {
 
   useEffect(() => {
     if (stage === 'done') return
-    try {
-      sessionStorage.setItem(KEY, '1')
-    } catch {}
     document.documentElement.style.overflow = 'hidden'
     const leave = setTimeout(() => setStage('out'), 1700)
     const skip = () => setStage('out')
