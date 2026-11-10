@@ -66,7 +66,7 @@ export function Reveal({ children, className = '', delay = 0 }) {
 export function Card({ id, icon: Icon, title, action, children, className = '', delay = 0 }) {
   return (
     <Reveal delay={delay} className={className}>
-      <section id={id} className="h-full scroll-mt-6 rounded-2xl border border-line bg-panel p-6 shadow-sm sm:p-7">
+      <section id={id} className="flex h-full scroll-mt-6 flex-col rounded-2xl border border-line bg-panel p-6 shadow-sm sm:p-7">
         {title && (
           <div className="mb-5 flex items-center justify-between gap-3">
             <h2 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-fg">

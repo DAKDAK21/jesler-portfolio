@@ -143,7 +143,8 @@ export function TechStack() {
 export function Experience() {
   return (
     <Card id="journey" icon={BriefcaseBusiness} title="Experience & Education" delay={120}>
-      <ol className="relative ml-2 space-y-7 border-l border-line">
+      {/* When the card is stretched to match the column beside it, spread the entries over the full height */}
+      <ol className="relative ml-2 flex flex-1 flex-col justify-between gap-7 border-l border-line">
         {journey.map((j, i) => (
           <li key={j.title} className="relative pl-6">
             <span
