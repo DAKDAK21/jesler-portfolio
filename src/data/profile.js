@@ -29,6 +29,11 @@ export const about = [
   "I care about software that saves people work. During our defense, the panel pointed out that one of our features still left most of the work to the teacher, so we reworked it until the system did it for them. That's the kind of developer I want to be.",
 ]
 
+// "Currently learning" row in the About card. Add a line here whenever you start learning something new.
+export const learning = [
+  { topic: 'Collaborative robot programming', where: 'Level III, St. Amatiel Technological Institute' },
+]
+
 export const stats = [
   { value: '130+', label: 'Commits to TraiSki' },
   { value: '4', label: 'User portals built' },

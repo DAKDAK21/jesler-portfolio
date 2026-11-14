@@ -3,6 +3,7 @@ import {
   ArrowRight,
   ArrowUpRight,
   Award,
+  BookOpen,
   Bot,
   BriefcaseBusiness,
   ChevronRight,
@@ -20,7 +21,7 @@ import {
   Phone,
   UserRound,
 } from 'lucide-react'
-import { about, certifications, gallery, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
+import { about, certifications, gallery, goals, journey, learning, profile, projects, skillGroups, stats } from '../data/profile'
 import { Card, Chip, GithubIcon, InstagramIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
 import CertGroup from './CertGroup'
@@ -119,6 +120,19 @@ export function About() {
           </div>
         ))}
       </dl>
+      {learning.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-dashed border-line px-4 py-3 text-sm">
+          <span className="inline-flex items-center gap-2 font-semibold text-fg">
+            <BookOpen className="size-4 text-muted" /> Currently learning
+          </span>
+          {learning.map((l) => (
+            <span key={l.topic} className="text-soft">
+              {l.topic}
+              {l.where && <span className="text-muted"> · {l.where}</span>}
+            </span>
+          ))}
+        </div>
+      )}
     </Card>
   )
 }
