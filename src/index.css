@@ -132,8 +132,22 @@ body {
   50% { opacity: 0.15; }
 }
 
+/* Photo strip that slides on its own. The list is drawn twice, so moving it
+   left by half its width brings the second copy exactly where the first began. */
+.marquee-track {
+  animation: marquee 70s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .pop-in, .chat-panel, .chat-dot, .blink { animation: none; }
+  .pop-in, .chat-panel, .chat-dot, .blink, .marquee-track { animation: none; }
+  .marquee { overflow-x: auto; } /* no sliding: let people scroll the strip instead */
 }

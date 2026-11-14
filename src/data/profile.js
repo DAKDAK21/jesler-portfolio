@@ -150,6 +150,25 @@ export const certifications = [
   },
 ]
 
+// Photos for the moving strip at the bottom. Files are in public/gallery/:
+// name-sm.jpg is the small strip picture (480px tall) and name.jpg the large one for the pop-up.
+// w and h are the small picture's size so the strip doesn't jump while it loads.
+export const gallery = [
+  { name: 'defense-panel', w: 360, h: 480, alt: 'Our team with the panel after the capstone presentation' },
+  { name: 'cafe-coding', w: 270, h: 480, alt: 'Coding with the team at a café' },
+  { name: 'pictorial-group', w: 320, h: 480, alt: 'Class pictorial in black suits' },
+  { name: 'team-outside', w: 640, h: 480, alt: 'The team outside with a school representative' },
+  { name: 'pictorial-trio', w: 320, h: 480, alt: 'Pictorial with classmates' },
+  { name: 'study-session', w: 924, h: 480, alt: 'Working on the project together at school' },
+  { name: 'pictorial-close', w: 320, h: 480, alt: 'Close-up group shot from the pictorial' },
+  { name: 'defense-team', w: 640, h: 480, alt: 'The team and panel in front of the presentation screen' },
+  { name: 'pictorial-fun', w: 320, h: 480, alt: 'A fun group shot from the pictorial' },
+  { name: 'lab', w: 853, h: 480, alt: 'Testing on a phone in the school lab' },
+  { name: 'pictorial-class', w: 320, h: 480, alt: 'The whole group at the pictorial' },
+  { name: 'pictorial-duo', w: 320, h: 480, alt: 'Two friends at the pictorial' },
+  { name: 'pictorial-solo', w: 320, h: 480, alt: 'Solo shot from the pictorial' },
+]
+
 // Shown at the bottom of the page.
 export const goals = [
   'Complete my OJT and grow into a full-stack developer who ships software people rely on every day.',

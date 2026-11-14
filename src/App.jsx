@@ -5,6 +5,7 @@ import {
   About,
   Certifications,
   Contact,
+  Gallery,
   Experience,
   Footer,
   Header,
@@ -38,6 +39,7 @@ export default function App() {
           </div>
 
           <Contact />
+          <Gallery />
         </main>
 
         <Footer />

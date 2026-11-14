@@ -5,6 +5,7 @@ import {
   Award,
   Bot,
   BriefcaseBusiness,
+  Camera,
   ChevronRight,
   Cloud,
   FileText,
@@ -19,7 +20,7 @@ import {
   Phone,
   UserRound,
 } from 'lucide-react'
-import { about, certifications, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
+import { about, certifications, gallery, goals, journey, profile, projects, skillGroups, stats } from '../data/profile'
 import { Card, Chip, GithubIcon, InstagramIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
 import CertGroup from './CertGroup'
@@ -381,6 +382,46 @@ export function Contact() {
         </div>
       </section>
     </Reveal>
+  )
+}
+
+// A strip of photos that slides on its own (paused while hovered). Black and white until
+// you point at a photo; tapping one opens it large, in color.
+export function Gallery() {
+  const [viewing, setViewing] = useState(null)
+  const strip = [...gallery, ...gallery] // drawn twice so the loop has no gap
+  return (
+    <Card id="gallery" icon={Camera} title="Gallery">
+      <div className="marquee -mx-6 overflow-hidden mask-x-from-90% mask-x-to-100% sm:-mx-7">
+        <ul className="marquee-track flex w-max">
+          {strip.map((g, i) => {
+            const copy = i >= gallery.length
+            return (
+              <li key={`${g.name}-${i}`} className="pr-3" aria-hidden={copy || undefined}>
+                <button
+                  type="button"
+                  tabIndex={copy ? -1 : 0}
+                  onClick={() => setViewing({ image: `/gallery/${g.name}.jpg`, name: g.alt, alt: g.alt, bare: true })}
+                  aria-label={`Open photo: ${g.alt}`}
+                  className="group block cursor-zoom-in overflow-hidden rounded-xl border border-line bg-chip"
+                >
+                  <img
+                    src={`/gallery/${g.name}-sm.jpg`}
+                    alt=""
+                    width={g.w}
+                    height={g.h}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-44 w-auto grayscale transition duration-500 group-hover:scale-[1.03] group-hover:grayscale-0 group-focus-visible:grayscale-0 sm:h-60"
+                  />
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+      <CertViewer cert={viewing} onClose={() => setViewing(null)} />
+    </Card>
   )
 }
 
