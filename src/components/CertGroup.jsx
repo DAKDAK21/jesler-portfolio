@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { BadgeCheck, X } from 'lucide-react'
 import CertViewer from './CertViewer'
 
@@ -32,7 +33,7 @@ export default function CertGroup({ group, onClose }) {
 
   if (!group) return null
 
-  return (
+  return createPortal(
     <>
       <div
         className="fixed inset-0 z-70 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
@@ -94,6 +95,7 @@ export default function CertGroup({ group, onClose }) {
         </div>
       </div>
       <CertViewer cert={viewing} onClose={() => setViewing(null)} />
-    </>
+    </>,
+    document.body,
   )
 }

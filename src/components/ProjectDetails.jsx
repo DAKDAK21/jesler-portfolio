@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { ArrowUpRight, ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 // Pop-up for a project with screenshots: a picture viewer on top, then what the project is and what I did.
@@ -32,7 +33,7 @@ export default function ProjectDetails({ project, onClose }) {
   const shot = shots[index]
   const base = '/projects/traiski/'
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-70 flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-4"
       onClick={onClose}
@@ -66,12 +67,18 @@ export default function ProjectDetails({ project, onClose }) {
           {/* Screenshot viewer */}
           <figure className="border-b border-line bg-chip p-3 sm:p-5">
             <div className="relative">
-              <img
-                key={shot.name}
-                src={`${base}${shot.name}.jpg`}
-                alt={`${project.name} screenshot: ${shot.caption}`}
-                className="pop-in mx-auto max-h-[55dvh] w-auto rounded-lg border border-line bg-black object-contain"
-              />
+              {/* Fixed-size frame so switching between screenshots of different heights doesn't make the pop-up jump */}
+              <div
+                className="relative mx-auto aspect-1600/908 w-full overflow-hidden rounded-lg border border-line bg-black"
+                style={{ maxWidth: 'calc(55dvh * 1600 / 908)' }}
+              >
+                <img
+                  key={shot.name}
+                  src={`${base}${shot.name}.jpg`}
+                  alt={`${project.name} screenshot: ${shot.caption}`}
+                  className="fade-in absolute inset-0 size-full object-contain"
+                />
+              </div>
               {count > 1 && (
                 <>
                   <button
@@ -174,6 +181,7 @@ export default function ProjectDetails({ project, onClose }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

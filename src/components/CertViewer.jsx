@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { BadgeCheck, Download, X } from 'lucide-react'
 
 // Shows a certificate image in a pop-up on the same page.
@@ -23,9 +24,9 @@ export default function CertViewer({ cert, onClose }) {
 
   // Bare mode: just the image with a small close button (used for certificates).
   if (cert.bare) {
-    return (
+    return createPortal(
       <div
-        className="fixed inset-0 z-[80] flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+        className="fixed inset-0 z-80 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
         onClick={onClose}
         role="dialog"
         aria-modal="true"
@@ -47,13 +48,15 @@ export default function CertViewer({ cert, onClose }) {
             <X className="size-4" />
           </button>
         </div>
-      </div>
+      </div>,
+      document.body,
     )
   }
 
-  return (
+  // Pop-ups go straight into <body> so no card animation around them can squeeze them
+  return createPortal(
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-80 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -104,6 +107,7 @@ export default function CertViewer({ cert, onClose }) {
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

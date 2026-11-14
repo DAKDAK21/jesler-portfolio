@@ -146,6 +146,13 @@ body {
 @keyframes marquee {
   to { transform: translateX(-50%); }
 }
+/* Quick fade when the TraiSki screenshot changes (no movement, so it doesn't look like a new pop-up) */
+.fade-in {
+  animation: fade-in 0.2s ease;
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+}
 /* Black and white until pointed at. Plain filter values (no CSS variables) so every browser applies it. */
 .photo-bw {
   filter: grayscale(1);
@@ -160,6 +167,6 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; transition: none; }
-  .pop-in, .chat-panel, .chat-dot, .blink, .marquee-track { animation: none; }
+  .pop-in, .chat-panel, .chat-dot, .blink, .marquee-track, .fade-in { animation: none; }
   .marquee { overflow-x: auto; } /* no sliding: let people scroll the strip instead */
 }
