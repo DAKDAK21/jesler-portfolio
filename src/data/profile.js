@@ -59,7 +59,7 @@ export const skillGroups = [
     title: 'Tools & DevOps',
     color: 'pink',
     icon: 'wrench',
-    items: ['Git & GitHub', 'Vercel', 'AWS (EC2, VPC, S3, Lambda, IAM, DynamoDB)', 'ESLint', 'Figma', 'VS Code'],
+    items: ['Git & GitHub', 'Vercel', 'AWS (EC2, VPC, S3, Lambda, IAM, DynamoDB)', 'ESLint', 'Figma (wireframes)', 'VS Code'],
   },
 ]
 
