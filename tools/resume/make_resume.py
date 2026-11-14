@@ -131,16 +131,13 @@ story += bullets(
     "Fast-food cashier simulator made with a classmate in Grade 12 using HTML, CSS and JavaScript: takes orders "
     "and quantities, checks that the cash is enough, and prints a receipt with the total and change."
 )
-story.append(Spacer(1, 3))
-story.append(row("Student Information Management System", "STI College – Caloocan | 2022"))
-story += bullets("Designed a basic student records system using MySQL and an HTML, CSS and JavaScript interface.")
 
 story += section("Technical Skills")
 for label, value in [
     ("Frontend", "React, JavaScript (ES6+), HTML, CSS, Tailwind CSS, Vite, Responsive Design"),
     ("Backend", "Node.js, Express, REST APIs, JWT Authentication"),
     ("Database", "MySQL, Database Design and Queries, Migrations"),
-    ("Tools &amp; Cloud", "Git &amp; GitHub, Vercel, AWS (EC2, VPC, S3, Lambda, IAM basics), Playwright, Postman, VS Code"),
+    ("Tools &amp; Cloud", "Git &amp; GitHub, Vercel, VS Code"),
     ("Other Languages", "Python, Java, C#"),
     ("IT &amp; Networking", "Computer Troubleshooting, Network Setup and Basic Configuration"),
 ]:
