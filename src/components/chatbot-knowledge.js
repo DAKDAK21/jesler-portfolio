@@ -41,7 +41,7 @@ const topics = [
       text: traiski.team?.length
         ? `${traiski.name} was built by a team of ${traiski.team.length} as their capstone project:\n${traiski.team
             .map((n) => `• ${n}`)
-            .join('\n')}\n\n${profile.firstName} was one of the main developers, working on the frontend, backend, database and deployment.`
+            .join('\n')}\n\n${profile.firstName} worked on the frontend and backend during Capstone 2, building and fixing features in React and the Express and MySQL API. The design was made by their team leader.`
         : `${traiski.name} was a group capstone project.`,
       links: [traiski.links.live && { label: 'Open TraiSki', href: traiski.links.live }].filter(Boolean),
     }),
@@ -143,7 +143,7 @@ const topics = [
     id: 'about',
     keywords: ['who', 'about', 'yourself', 'himself', 'introduce', 'background', 'sino', 'tell me about him', 'jesler'],
     answer: () => ({
-      text: `${profile.name} is a ${profile.course} student at ${profile.school} and a ${profile.role.toLowerCase()} who builds web apps end to end, from the database to the UI. His biggest project so far is ${traiski.name}, a system built for a real school.`,
+      text: `${profile.name} is a ${profile.course} student at ${profile.school} and an ${profile.role.toLowerCase()} who builds web apps with React, Node.js and MySQL. His biggest project so far is ${traiski.name}, a system built for a real school.`,
       links: [{ label: 'Read more', href: '#about' }],
     }),
   },

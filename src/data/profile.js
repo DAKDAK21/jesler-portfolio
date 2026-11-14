@@ -3,14 +3,14 @@
 export const profile = {
   name: 'Jesler Guzman',
   firstName: 'Jesler',
-  role: 'Full-Stack Developer',
+  role: 'Aspiring Web Developer',
   course: 'BS Information Technology',
   courseFull: 'Bachelor of Science in Information Technology',
   school: 'STI College Caloocan',
   schoolYears: '2023 – Expected graduation: August 2027',
-  headline: 'BSIT Student · Full-Stack Developer',
+  headline: 'BSIT Student · Aspiring Web Developer',
   location: 'Valenzuela City, Metro Manila, Philippines',
-  tagline: 'I build web apps end to end, from the database schema to the last pixel of the UI.',
+  tagline: 'I build web apps with React, Node.js and MySQL, and I keep learning more with every project.',
   photo: '/profile.jpg', // put your photo in public/profile.jpg
   resume: { image: '/resume.jpg', pdf: '/resume.pdf' }, // shown in a pop-up; set to null to hide the button
   openTo: ['OJT / Internship', 'Junior developer roles', 'Freelance projects'],
@@ -25,7 +25,7 @@ export const profile = {
 
 export const about = [
   "I'm a BSIT student who enjoys building complete systems, not just pages. I like taking a real problem from a real client and turning it into something people actually use every day.",
-  'For our capstone, I was one of the main developers of TraiSki, a learning management system for a senior high school. I worked across the whole stack: the React frontend, the Express API, the MySQL database and the deployment.',
+  'For our capstone, I was one of the developers of TraiSki, a learning management system for a senior high school. During Capstone 2, I handled frontend and backend work: building and fixing features in the React pages and in the Express and MySQL API. Our team leader created the design, and I polished it and made it work.',
   "I care about software that saves people work. When our defense panel told us a feature was \"computerized, not automated,\" we rebuilt it so the system does the work for the teacher. That's the kind of developer I want to be.",
 ]
 
@@ -59,7 +59,7 @@ export const skillGroups = [
     title: 'Tools & DevOps',
     color: 'pink',
     icon: 'wrench',
-    items: ['Git & GitHub', 'Render', 'Vercel', 'AWS (EC2, VPC, S3, Lambda, IAM, DynamoDB)', 'Playwright (E2E tests)', 'Postman', 'ESLint', 'Figma', 'VS Code'],
+    items: ['Git & GitHub', 'Vercel', 'AWS (EC2, VPC, S3, Lambda, IAM, DynamoDB)', 'Playwright (E2E tests)', 'Postman', 'ESLint', 'Figma', 'VS Code'],
   },
 ]
 
@@ -77,7 +77,7 @@ export const projects = [
       'Security: bcrypt passwords, JWT sessions, optional authenticator-app 2FA, login activity and audit logs',
       'Admin tools: bulk account creation from Excel, class record export, archiving instead of deleting',
     ],
-    role: 'Full-stack developer (frontend, backend, database and deployment)',
+    role: 'Frontend and backend developer during Capstone 2 (React, Express, MySQL). The design was made by our team leader',
     team: ['Jesler Guzman', 'Felix Gold Velez', 'Lorenz Carceler', 'Richmond Jabez Panganiban'], // capstone group
     result: 'Defended on October 31, 2026 and passed with minor revisions and a grade of 90.',
     stack: ['React', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'MySQL', 'JWT', 'Playwright', 'Render'],
