@@ -30,9 +30,8 @@ export const about = [
 ]
 
 // "Currently learning" row in the About card. Add a line here whenever you start learning something new.
-export const learning = [
-  { topic: 'Collaborative robot programming', where: 'Level III, St. Amatiel Technological Institute' },
-]
+// Empty list = the row is hidden. Example: { topic: 'TypeScript', where: 'online course' }
+export const learning = []
 
 export const stats = [
   { value: '130+', label: 'Commits to TraiSki' },
