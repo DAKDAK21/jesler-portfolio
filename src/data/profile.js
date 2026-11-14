@@ -24,9 +24,9 @@ export const profile = {
 }
 
 export const about = [
-  "I'm a BSIT student who enjoys building complete systems, not just pages. I like taking a real problem from a real client and turning it into something people actually use every day.",
+  "I'm a fourth-year BSIT student at STI College Caloocan, learning web development one project at a time. I enjoy working on both what users see and the code behind it, and I'm looking for an OJT where I can grow with a real team.",
   'For our capstone, I was one of the developers of TraiSki, a learning management system for a senior high school. During Capstone 2, I handled frontend and backend work: building and fixing features in the React pages and in the Express and MySQL API. Our team leader created the design, and I polished it and made it work.',
-  "I care about software that saves people work. When our defense panel told us a feature was \"computerized, not automated,\" we rebuilt it so the system does the work for the teacher. That's the kind of developer I want to be.",
+  "I care about software that saves people work. During our defense, the panel pointed out that one of our features still left most of the work to the teacher, so we reworked it until the system did it for them. That's the kind of developer I want to be.",
 ]
 
 export const stats = [
