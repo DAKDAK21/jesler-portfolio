@@ -81,6 +81,16 @@ export const projects = [
     team: ['Jesler Guzman', 'Felix Gold Velez', 'Lorenz Carceler', 'Richmond Jabez Panganiban'], // capstone group
     result: 'Defended on October 31, 2026 and passed with minor revisions and a grade of 90.',
     stack: ['React', 'Vite', 'Tailwind CSS', 'Node.js', 'Express', 'MySQL', 'JWT', 'Playwright', 'Render'],
+    // Screenshots in public/projects/traiski/ (name.jpg large, name-sm.jpg thumbnail). People's names are blurred.
+    screenshots: [
+      { name: 'login', caption: 'One login page for students, teachers and admins' },
+      { name: 'student-dashboard', caption: 'Student dashboard: school news, subjects, calendar and tasks' },
+      { name: 'student-modules', caption: 'A subject’s modules, grouped by term' },
+      { name: 'student-assignments', caption: 'Assignments with start and due dates and scores' },
+      { name: 'teacher-dashboard', caption: 'Teacher dashboard with classes and recent submissions' },
+      { name: 'teacher-gradebook', caption: 'Gradebook with class stats, Excel export and printing' },
+      { name: 'admin-dashboard', caption: 'Admin dashboard: what needs attention across the school' },
+    ],
     links: {
       live: 'https://srtvhs-elms.website',
       code: '', // the TraiSki repo is private, so no public source link

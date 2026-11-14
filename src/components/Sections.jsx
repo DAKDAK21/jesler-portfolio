@@ -11,6 +11,7 @@ import {
   FlaskConical,
   FolderKanban,
   Goal,
+  Images,
   Link2,
   Mail,
   MapPin,
@@ -23,6 +24,7 @@ import { about, certifications, gallery, goals, journey, profile, projects, skil
 import { Card, Chip, GithubIcon, InstagramIcon, LinkedinIcon, Reveal } from './ui'
 import CertViewer from './CertViewer'
 import CertGroup from './CertGroup'
+import ProjectDetails from './ProjectDetails'
 
 export const domainOf = (url) => {
   try {
@@ -167,27 +169,47 @@ export function Experience() {
 
 // Each card opens the project's site directly in a new tab.
 export function Projects() {
+  const [open, setOpen] = useState(null)
   return (
     <Card id="projects" icon={FolderKanban} title="Projects">
       <div className="grid gap-3 sm:grid-cols-2">
         {projects.map((p) => {
           const link = p.links.live || p.links.code
+          const shots = p.screenshots?.length
           const inner = (
             <>
               <div className="flex w-full items-start justify-between gap-2">
                 <h3 className="font-semibold text-fg">{p.name}</h3>
-                {link && (
-                  <ArrowUpRight className="size-4 shrink-0 text-muted transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-fg" />
+                {shots ? (
+                  <Images className="size-4 shrink-0 text-muted transition group-hover:text-fg" />
+                ) : (
+                  link && (
+                    <ArrowUpRight className="size-4 shrink-0 text-muted transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-fg" />
+                  )
                 )}
               </div>
               <p className="mt-1 flex-1 text-sm leading-snug text-muted">{p.tagline}</p>
               <span className="mt-3 inline-flex max-w-full items-center gap-1.5 truncate rounded-md border border-line bg-chip px-2 py-1 font-mono text-xs text-soft">
                 <span className={`size-1.5 shrink-0 rounded-full ${link ? 'bg-emerald-500' : p.note ? 'bg-muted' : 'bg-amber-500'}`} />
-                {p.note || (link ? domainOf(link) : 'Live demo soon')}
+                {p.note || (shots ? `${shots} screenshots` : link ? domainOf(link) : 'Live demo soon')}
               </span>
             </>
           )
           const cls = 'group flex h-full flex-col rounded-xl border border-line bg-panel p-4 text-left'
+          // Projects with screenshots open a pop-up (with the live link inside); the rest open their site
+          if (shots) {
+            return (
+              <button
+                key={p.name}
+                type="button"
+                onClick={() => setOpen(p)}
+                aria-label={`${p.name}: see screenshots and details`}
+                className={`${cls} cursor-pointer transition hover:-translate-y-0.5 hover:border-muted/40 hover:shadow-md`}
+              >
+                {inner}
+              </button>
+            )
+          }
           return link ? (
             <a
               key={p.name}
@@ -205,6 +227,7 @@ export function Projects() {
           )
         })}
       </div>
+      <ProjectDetails project={open} onClose={() => setOpen(null)} />
     </Card>
   )
 }
