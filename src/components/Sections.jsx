@@ -5,7 +5,6 @@ import {
   Award,
   Bot,
   BriefcaseBusiness,
-  Camera,
   ChevronRight,
   Cloud,
   FileText,
@@ -391,7 +390,7 @@ export function Gallery() {
   const [viewing, setViewing] = useState(null)
   const strip = [...gallery, ...gallery] // drawn twice so the loop has no gap
   return (
-    <Card id="gallery" icon={Camera} title="Gallery">
+    <Card id="gallery">
       <div className="marquee -mx-6 overflow-hidden mask-x-from-90% mask-x-to-100% sm:-mx-7">
         <ul className="marquee-track flex w-max">
           {strip.map((g, i) => {
@@ -412,7 +411,7 @@ export function Gallery() {
                     height={g.h}
                     loading="lazy"
                     decoding="async"
-                    className="h-44 w-auto grayscale transition duration-500 group-hover:scale-[1.03] group-hover:grayscale-0 group-focus-visible:grayscale-0 sm:h-60"
+                    className="photo-bw h-44 w-auto sm:h-60"
                   />
                 </button>
               </li>

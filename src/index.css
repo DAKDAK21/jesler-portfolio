@@ -144,6 +144,16 @@ body {
 @keyframes marquee {
   to { transform: translateX(-50%); }
 }
+/* Black and white until pointed at. Plain filter values (no CSS variables) so every browser applies it. */
+.photo-bw {
+  filter: grayscale(1);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+.group:hover .photo-bw,
+.group:focus-visible .photo-bw {
+  filter: none;
+  transform: scale(1.03);
+}
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
