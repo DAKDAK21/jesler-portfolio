@@ -137,8 +137,10 @@ body {
 .marquee-track {
   animation: marquee 70s linear infinite;
 }
+/* Pause while pointed at, or while a keyboard user is on one of the photos
+   (a mouse click alone should not leave it paused) */
 .marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track {
+.marquee:has(:focus-visible) .marquee-track {
   animation-play-state: paused;
 }
 @keyframes marquee {

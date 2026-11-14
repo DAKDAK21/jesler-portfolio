@@ -388,7 +388,13 @@ export function Contact() {
 // you point at a photo; tapping one opens it large, in color.
 export function Gallery() {
   const [viewing, setViewing] = useState(null)
+  const [byPointer, setByPointer] = useState(false)
   const strip = [...gallery, ...gallery] // drawn twice so the loop has no gap
+  const close = () => {
+    setViewing(null)
+    // The viewer hands focus back to the photo; after a mouse or tap, let go of it so the strip keeps moving
+    if (byPointer) setTimeout(() => document.activeElement?.blur(), 0)
+  }
   return (
     <Card id="gallery">
       <div className="marquee -mx-6 overflow-hidden mask-x-from-90% mask-x-to-100% sm:-mx-7">
@@ -400,7 +406,10 @@ export function Gallery() {
                 <button
                   type="button"
                   tabIndex={copy ? -1 : 0}
-                  onClick={() => setViewing({ image: `/gallery/${g.name}.jpg`, name: g.alt, alt: g.alt, bare: true })}
+                  onClick={(e) => {
+                    setByPointer(e.detail > 0) // detail is 0 when opened with Enter or Space
+                    setViewing({ image: `/gallery/${g.name}.jpg`, name: g.alt, alt: g.alt, bare: true })
+                  }}
                   aria-label={`Open photo: ${g.alt}`}
                   className="group block cursor-zoom-in overflow-hidden rounded-xl border border-line bg-chip"
                 >
@@ -419,7 +428,7 @@ export function Gallery() {
           })}
         </ul>
       </div>
-      <CertViewer cert={viewing} onClose={() => setViewing(null)} />
+      <CertViewer cert={viewing} onClose={close} />
     </Card>
   )
 }
