@@ -6,6 +6,7 @@ import { ArrowUpRight, ChevronLeft, ChevronRight, X } from 'lucide-react'
 export default function ProjectDetails({ project, onClose }) {
   const [index, setIndex] = useState(0)
   const closeRef = useRef(null)
+  const thumbsRef = useRef(null)
   const shots = project?.screenshots || []
   const count = shots.length
   const go = (step) => setIndex((i) => (i + step + count) % count)
@@ -28,6 +29,17 @@ export default function ProjectDetails({ project, onClose }) {
       prev?.focus?.()
     }
   }, [project, onClose, count])
+
+  // Keep the current thumbnail in view when there are more than fit in the row
+  useEffect(() => {
+    const row = thumbsRef.current
+    const thumb = row?.children[index]
+    if (!thumb) return
+    const left = thumb.offsetLeft - row.offsetLeft
+    if (left < row.scrollLeft) row.scrollTo({ left: left - 8, behavior: 'smooth' })
+    else if (left + thumb.offsetWidth > row.scrollLeft + row.clientWidth)
+      row.scrollTo({ left: left + thumb.offsetWidth - row.clientWidth + 8, behavior: 'smooth' })
+  }, [index])
 
   if (!project) return null
   const shot = shots[index]
@@ -103,7 +115,7 @@ export default function ProjectDetails({ project, onClose }) {
             <figcaption className="mt-3 text-center text-sm text-soft" aria-live="polite">
               {shot.caption} <span className="text-muted">· {index + 1} of {count}</span>
             </figcaption>
-            <div className="mt-3 flex gap-2 overflow-x-auto pb-1 sm:justify-center">
+            <div ref={thumbsRef} className="mx-auto mt-3 flex w-fit max-w-full gap-2 overflow-x-auto pb-1">
               {shots.map((s, i) => (
                 <button
                   key={s.name}

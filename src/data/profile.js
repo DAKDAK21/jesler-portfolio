@@ -89,7 +89,11 @@ export const projects = [
       { name: 'student-assignments', caption: 'Assignments with start and due dates and scores' },
       { name: 'teacher-dashboard', caption: 'Teacher dashboard with classes and recent submissions' },
       { name: 'teacher-gradebook', caption: 'Gradebook with class stats, Excel export and printing' },
-      { name: 'admin-dashboard', caption: 'Admin dashboard: what needs attention across the school' },
+      { name: 'admin-dashboard', caption: 'Admin dashboard: what needs attention, plus school-wide numbers' },
+      { name: 'admin-create-account', caption: 'Creating a student or teacher account' },
+      { name: 'admin-classes', caption: 'Sections, subjects and enrollment in one place' },
+      { name: 'admin-reports', caption: 'Reports on enrollment and how each class is doing' },
+      { name: 'admin-slides', caption: 'Dashboard slides the admin posts for school news' },
     ],
     links: {
       live: 'https://srtvhs-elms.website',
